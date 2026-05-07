@@ -2,9 +2,3 @@
 set -e
 
 ldconfig
-
-if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
-    if [ -d /run/udev ]; then
-        udevadm control --reload-rules || true
-    fi
-fi

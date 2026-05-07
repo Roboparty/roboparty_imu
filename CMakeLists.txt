@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.12)
-project(roboto_imu)
+
+# 从 package.xml 中提取大版本号
+file(READ "package.xml" PACKAGE_XML_CONTENT)
+string(REGEX MATCH "<version>([0-9\\.]+)</version>" _ ${PACKAGE_XML_CONTENT})
+project(roboto_imu VERSION ${CMAKE_MATCH_1})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 if(NOT CMAKE_CROSSCOMPILING)
@@ -40,13 +44,37 @@ target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu imu_protocol)
 install(DIRECTORY include/ DESTINATION include)
 
 install(TARGETS imu hipnuc_imu imu_protocol
+  EXPORT roboto_imu-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
 
-# Install our custom Config for non-ROS consumers (Deb mode)
-install(FILES cmake/roboto_imuConfig.cmake
+install(EXPORT roboto_imu-targets
+  FILE roboto_imuTargets.cmake
+  NAMESPACE roboto_imu::
+  DESTINATION lib/cmake/roboto_imu
+)
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY AnyNewerVersion
+)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/roboto_imuConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/roboto_imu
+)
+
+# Install auto-generated Config for non-ROS consumers (Deb mode)
+install(FILES 
+  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfigVersion.cmake"
   DESTINATION lib/cmake/roboto_imu
 )
 
