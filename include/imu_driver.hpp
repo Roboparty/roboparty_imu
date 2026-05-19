@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
+/**
+ * @file imu_driver.hpp
+ * @brief Abstract IMU driver interface and sensor data structures.
+ * @details Defines the IMUDriver base class and packed sensor data structs.
+ *          Supports multiple IMU backends via factory pattern.
+ */
+
 #pragma once
 
 #include <stdint.h>

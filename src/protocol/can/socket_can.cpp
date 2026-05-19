@@ -1,7 +1,11 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
 /**
- * @file
- * This file implements functions to receive
- * CAN frames via SocketCAN.
+ * @file socket_can.cpp
+ * @brief SocketCAN receiver implementation for CAN/CAN FD frames.
+ * @details Contains socket initialization, epoll-based frame reception,
+ *          and error frame filtering logic via Linux SocketCAN.
  */
 
 #include "socket_can.hpp"

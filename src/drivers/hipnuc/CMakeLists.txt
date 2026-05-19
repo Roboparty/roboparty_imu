@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0
+# Copyright (C) 2026 Luo1imasi
 AUX_SOURCE_DIRECTORY(. SOURCE_LIST_HIPNUC_IMU)
 add_library(hipnuc_imu
         STATIC

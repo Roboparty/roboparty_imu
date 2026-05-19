@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
+/**
+ * @file serial_port.hpp
+ * @brief Serial port interface for IMU communication.
+ * @details Provides a UART serial port abstraction with asynchronous read
+ *          callback support for receiving IMU data streams.
+ */
+
 #pragma once
 
 #include <string>

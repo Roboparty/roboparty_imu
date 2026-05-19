@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
+/**
+ * @file pybind_module.cpp
+ * @brief Python bindings for the IMU driver library via pybind11.
+ * @details Exposes IMUDriver and sensor data accessors to Python
+ *          as the imu_py module.
+ */
+
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "imu_driver.hpp"
