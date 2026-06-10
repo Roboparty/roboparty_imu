@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
+/**
+ * @file serial_port.cpp
+ * @brief Serial port implementation for IMU communication.
+ * @details Implements UART serial port opening, configuration, and
+ *          asynchronous reading with callback-based data delivery.
+ */
+
 #include "serial_port.hpp"
 
 std::shared_ptr<spdlog::logger> IMUSerialPort::logger_ = nullptr;

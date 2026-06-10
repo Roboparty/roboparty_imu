@@ -2,8 +2,3 @@
 set -e
 
 ldconfig
-
-if [ -d /run/udev ]; then
-    udevadm control --reload-rules || true
-    udevadm trigger || true
-fi

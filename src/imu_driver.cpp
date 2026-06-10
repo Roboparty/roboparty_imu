@@ -1,3 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
+/**
+ * @file imu_driver.cpp
+ * @brief Factory implementation for creating IMU driver instances.
+ * @details Provides IMUDriver::create_imu() to instantiate the appropriate
+ *          driver backend based on configuration (e.g., HiPNUC).
+ */
+
 #include "imu_driver.hpp"
 
 #include "drivers/hipnuc/hipnuc_imu_driver.hpp"

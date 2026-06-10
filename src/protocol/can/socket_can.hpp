@@ -1,7 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0
+// Copyright (C) 2026 Luo1imasi
+
 /**
- * @file
- * This file declares an interface to SocketCAN,
- * to facilitate frame reception.
+ * @file socket_can.hpp
+ * @brief SocketCAN interface declaration for CAN/CAN FD frame reception.
+ * @details Provides the IMUSocketCAN singleton class that wraps Linux
+ *          SocketCAN socket operations and delivers parsed frames
+ *          to registered callback handlers.
  */
 
 #pragma once

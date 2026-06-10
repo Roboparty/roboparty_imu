@@ -2,21 +2,18 @@ name: Build Roboto IMU Deb Package
 
 on:
   push:
-    branches: [main, master]
-    paths:
-      - "**"
-      - ".github/workflows/build-deb.yml"
-    tags:
-      - "imu-v*"
-  pull_request:
-    branches: [main, master]
-    paths:
-      - "**"
-  workflow_dispatch:
 
 jobs:
-  build-arm64:
-    runs-on: ubuntu-22.04-arm
+  build:
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            os: ubuntu-22.04
+          - arch: arm64
+            # os: ubuntu-22.04-arm
+            os: [self-hosted, linux, ARM64]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,22 +21,27 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y --no-install-recommends \
-            build-essential cmake ccache dpkg-dev \
+          sudo apt-get install -y \
+            build-essential cmake ccache dpkg-dev debhelper devscripts \
             libspdlog-dev libfmt-dev \
             python3-dev pybind11-dev
 
       - name: Build deb package
-        run: ./build_deb.sh
+        run: |
+          dpkg-buildpackage -us -uc -b
+          mv ../*.deb .
+          
+          VERSION=$(dpkg-parsechangelog -S Version | cut -d'-' -f1 || echo "unknown")
+          echo "PKG_VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload deb artifact
         uses: actions/upload-artifact@v4
         with:
-          name: roboto-imu-arm64-deb
-          path: roboto-imu_*.deb
+          name: roboto-imu-v${{ env.PKG_VERSION }}-${{ matrix.arch }}
+          path: "*.deb"
 
       - name: Upload to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/imu-v')
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: roboto-imu_*.deb
+          files: "*.deb"
