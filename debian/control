@@ -1,13 +1,13 @@
-Source: roboto-imu
+Source: roboparty-imu
 Section: libs
 Priority: optional
 Maintainer: RoboParty <2321901849@qq.com>
 Build-Depends: debhelper-compat (= 12), cmake, pkg-config,
                libspdlog-dev, libfmt-dev, pybind11-dev, python3-dev
 
-Package: roboto-imu
+Package: roboparty-imu
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, roboto-base (>= 1.0.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, roboparty-base (>= 1.0.0)
 Description: RoboParty IMU driver
  IMU driver with HIPNUC support (CAN and serial protocols).
  Provides static libraries, headers and Python bindings.

@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-3.0
+# Copyright (C) 2026 wentywenty
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(fmt)
+find_dependency(spdlog)
+
+include("${CMAKE_CURRENT_LIST_DIR}/roboparty_imuTargets.cmake")
+
+if(NOT TARGET roboparty_imu::roboparty_imu)
+    add_library(roboparty_imu::roboparty_imu INTERFACE IMPORTED)
+    target_link_libraries(roboparty_imu::roboparty_imu INTERFACE 
+        roboparty_imu::imu
+        roboparty_imu::hipnuc_imu
+        roboparty_imu::imu_protocol
+    )
+endif()
+
+check_required_components(roboparty_imu)

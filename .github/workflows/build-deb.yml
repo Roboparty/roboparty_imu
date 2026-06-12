@@ -1,4 +1,4 @@
-name: Build Roboto IMU Deb Package
+name: Build RoboParty IMU Deb Package
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
       - name: Upload deb artifact
         uses: actions/upload-artifact@v4
         with:
-          name: roboto-imu-v${{ env.PKG_VERSION }}-${{ matrix.arch }}
+          name: roboparty-imu-v${{ env.PKG_VERSION }}-${{ matrix.arch }}
           path: "*.deb"
 
       - name: Upload to GitHub Release

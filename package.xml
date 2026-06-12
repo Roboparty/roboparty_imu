@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>roboto_imu</name>
+  <name>roboparty_imu</name>
   <version>1.1.6</version>
-  <description>roboto imu package</description>
+  <description>roboparty imu package</description>
   <maintainer email="2321901849@qq.com">RoboParty</maintainer>
   <license>GPL-3.0</license>
 

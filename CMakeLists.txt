@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.12)
 
 file(READ "package.xml" PACKAGE_XML_CONTENT)
 string(REGEX MATCH "<version>([0-9\\.]+)</version>" _ ${PACKAGE_XML_CONTENT})
-project(roboto_imu VERSION ${CMAKE_MATCH_1})
+project(roboparty_imu VERSION ${CMAKE_MATCH_1})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 if(NOT CMAKE_CROSSCOMPILING)
@@ -45,38 +45,38 @@ target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu imu_protocol)
 install(DIRECTORY include/ DESTINATION include)
 
 install(TARGETS imu hipnuc_imu imu_protocol
-  EXPORT roboto_imu-targets
+  EXPORT roboparty_imu-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
   INCLUDES DESTINATION include
 )
 
-install(EXPORT roboto_imu-targets
-  FILE roboto_imuTargets.cmake
-  NAMESPACE roboto_imu::
-  DESTINATION lib/cmake/roboto_imu
+install(EXPORT roboparty_imu-targets
+  FILE roboparty_imuTargets.cmake
+  NAMESPACE roboparty_imu::
+  DESTINATION lib/cmake/roboparty_imu
 )
 
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfigVersion.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/roboparty_imuConfigVersion.cmake"
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY AnyNewerVersion
 )
 
 configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/roboto_imuConfig.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfig.cmake"
-  INSTALL_DESTINATION lib/cmake/roboto_imu
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/roboparty_imuConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/roboparty_imuConfig.cmake"
+  INSTALL_DESTINATION lib/cmake/roboparty_imu
 )
 
 # Install auto-generated Config for non-ROS consumers (Deb mode)
 install(FILES 
-  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfig.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/roboto_imuConfigVersion.cmake"
-  DESTINATION lib/cmake/roboto_imu
+  "${CMAKE_CURRENT_BINARY_DIR}/roboparty_imuConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/roboparty_imuConfigVersion.cmake"
+  DESTINATION lib/cmake/roboparty_imu
 )
 
 pybind11_add_module(imu_py src/pybind_module.cpp)
