@@ -123,3 +123,7 @@ uint64_t HipnucIMUDriver::get_timestamp() {
     std::shared_lock<std::shared_mutex> lock(imu_mutex_);
     return (uint64_t)sensor_data_.timestamp_ms * 1000ULL;
 }
+
+uint8_t HipnucIMUDriver::get_cycle() {
+    return 0;  /* HiPNUC protocol has no cycle counter */
+}

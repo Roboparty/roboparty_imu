@@ -1,5 +1,4 @@
 #include "mct7123_imu_driver.hpp"
-#include <cstdint>
 #include <cstring>
 
 Mct7123IMUDriver::Mct7123IMUDriver(uint16_t imu_id, const std::string& interface_type,
@@ -45,8 +44,9 @@ void Mct7123IMUDriver::serial_rx_cbk(const uint8_t* data, size_t length)
             case MCT7123_MSG_IMU_DATA: {
                 float gx, gy, gz, ax, ay, az, mx, my, mz, t;
                 uint64_t ts_us;
+                uint8_t cyc;
                 mct7123_parse_imu(raw_.payload, &gx, &gy, &gz,
-                                  &ax, &ay, &az, &mx, &my, &mz, &t, &ts_us);
+                                  &ax, &ay, &az, &mx, &my, &mz, &t, &ts_us, &cyc);
                 sensor_data_.gyr_x = gx * DEG_TO_RAD;
                 sensor_data_.gyr_y = gy * DEG_TO_RAD;
                 sensor_data_.gyr_z = gz * DEG_TO_RAD;
@@ -58,15 +58,17 @@ void Mct7123IMUDriver::serial_rx_cbk(const uint8_t* data, size_t length)
                 sensor_data_.mag_z = mz;
                 sensor_data_.temperature = t;
                 sensor_data_.timestamp_ms = (uint32_t)(ts_us / 1000ULL);
+                sensor_data_.cycle = cyc;
                 break;
             }
             case MCT7123_MSG_ATT_DATA: {
                 float roll, pitch, yaw, qw, qx, qy, qz, t;
                 uint32_t fusion_status;
                 uint64_t ts_us;
+                uint8_t cyc;
                 mct7123_parse_att(raw_.payload, &roll, &pitch, &yaw,
                                   &qw, &qx, &qy, &qz, &t,
-                                  nullptr, &fusion_status, &ts_us);
+                                  sensor_data_.running_status, &fusion_status, &ts_us, &cyc);
                 sensor_data_.quat_w = qw;
                 sensor_data_.quat_x = qx;
                 sensor_data_.quat_y = qy;
@@ -76,6 +78,7 @@ void Mct7123IMUDriver::serial_rx_cbk(const uint8_t* data, size_t length)
                 sensor_data_.imu_yaw = yaw;
                 sensor_data_.temperature = t;
                 sensor_data_.timestamp_ms = (uint32_t)(ts_us / 1000ULL);
+                sensor_data_.cycle = cyc;
                 break;
             }
             case MCT7123_MSG_CFG_DATA: {
@@ -111,8 +114,9 @@ void Mct7123IMUDriver::can_rx_cbk(const canfd_frame& rx_frame)
     case 0x181: {
         float gx, gy, gz, ax, ay, az, mx, my, mz, t;
         uint64_t ts_us;
+        uint8_t cyc;
         mct7123_parse_imu(payload, &gx, &gy, &gz,
-                          &ax, &ay, &az, &mx, &my, &mz, &t, &ts_us);
+                          &ax, &ay, &az, &mx, &my, &mz, &t, &ts_us, &cyc);
         sensor_data_.gyr_x = gx * DEG_TO_RAD;
         sensor_data_.gyr_y = gy * DEG_TO_RAD;
         sensor_data_.gyr_z = gz * DEG_TO_RAD;
@@ -124,15 +128,17 @@ void Mct7123IMUDriver::can_rx_cbk(const canfd_frame& rx_frame)
         sensor_data_.mag_z = mz;
         sensor_data_.temperature = t;
         sensor_data_.timestamp_ms = (uint32_t)(ts_us / 1000ULL);
+        sensor_data_.cycle = cyc;
         break;
     }
     case 0x182: {
         float roll, pitch, yaw, qw, qx, qy, qz, t;
         uint32_t fusion_status;
         uint64_t ts_us;
+        uint8_t cyc;
         mct7123_parse_att(payload, &roll, &pitch, &yaw,
                           &qw, &qx, &qy, &qz, &t,
-                          nullptr, &fusion_status, &ts_us);
+                          sensor_data_.running_status, &fusion_status, &ts_us, &cyc);
         sensor_data_.quat_w = qw;
         sensor_data_.quat_x = qx;
         sensor_data_.quat_y = qy;
@@ -142,6 +148,7 @@ void Mct7123IMUDriver::can_rx_cbk(const canfd_frame& rx_frame)
         sensor_data_.imu_yaw = yaw;
         sensor_data_.temperature = t;
         sensor_data_.timestamp_ms = (uint32_t)(ts_us / 1000ULL);
+        sensor_data_.cycle = cyc;
         break;
     }
     case 0x183: {
@@ -195,4 +202,10 @@ float Mct7123IMUDriver::get_temperature()
 {
     std::shared_lock<std::shared_mutex> lock(imu_mutex_);
     return sensor_data_.temperature;
+}
+
+uint8_t Mct7123IMUDriver::get_cycle()
+{
+    std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+    return sensor_data_.cycle;
 }

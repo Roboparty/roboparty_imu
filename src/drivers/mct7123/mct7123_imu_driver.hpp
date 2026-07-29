@@ -33,6 +33,7 @@ class Mct7123IMUDriver : public IMUDriver {
     std::vector<float> get_euler() override;
     uint64_t get_timestamp() override;
     float get_temperature() override;
+    uint8_t get_cycle() override;
 
    private:
     int baudrate_;

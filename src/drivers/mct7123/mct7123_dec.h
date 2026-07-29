@@ -55,13 +55,13 @@ void mct7123_parse_imu(const uint8_t payload[64],
                        float *gyr_x, float *gyr_y, float *gyr_z,
                        float *acc_x, float *acc_y, float *acc_z,
                        float *mag_x, float *mag_y, float *mag_z,
-                       float *temp, uint64_t *systimer_us);
+                       float *temp, uint64_t *systimer_us, uint8_t *cycle);
 
 void mct7123_parse_att(const uint8_t payload[64],
                        float *roll, float *pitch, float *yaw,
                        float *qw, float *qx, float *qy, float *qz,
                        float *temp, uint8_t *running_status, uint32_t *fusion_status,
-                       uint64_t *systimer_us);
+                       uint64_t *systimer_us, uint8_t *cycle);
 
 /** MD7123 config frame (Msg_ID 0x83 / CAN ID 0x183). All pointers may be NULL. */
 void mct7123_parse_cfg(const uint8_t payload[64],

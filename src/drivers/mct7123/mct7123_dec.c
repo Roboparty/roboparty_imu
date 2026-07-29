@@ -120,7 +120,7 @@ void mct7123_parse_imu(const uint8_t payload[64],
                        float *gyr_x, float *gyr_y, float *gyr_z,
                        float *acc_x, float *acc_y, float *acc_z,
                        float *mag_x, float *mag_y, float *mag_z,
-                       float *temp, uint64_t *systimer_us)
+                       float *temp, uint64_t *systimer_us, uint8_t *cycle)
 {
     if (systimer_us) memcpy(systimer_us, payload, 8);
     *gyr_x = r4(payload + 8);
@@ -133,13 +133,14 @@ void mct7123_parse_imu(const uint8_t payload[64],
     *mag_y = r4(payload + 36);
     *mag_z = r4(payload + 40);
     *temp  = r4(payload + 44);
+    if (cycle) *cycle = payload[61];
 }
 
 void mct7123_parse_att(const uint8_t payload[64],
                        float *roll, float *pitch, float *yaw,
                        float *qw, float *qx, float *qy, float *qz,
                        float *temp, uint8_t *running_status, uint32_t *fusion_status,
-                       uint64_t *systimer_us)
+                       uint64_t *systimer_us, uint8_t *cycle)
 {
     if (systimer_us) memcpy(systimer_us, payload, 8);
     *roll  = r4(payload + 8);
@@ -159,6 +160,7 @@ void mct7123_parse_att(const uint8_t payload[64],
     if (running_status) {
         memcpy(running_status, payload + 42, 6);
     }
+    if (cycle) *cycle = payload[61];
 }
 
 void mct7123_parse_cfg(const uint8_t payload[64],

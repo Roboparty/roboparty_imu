@@ -47,5 +47,7 @@ PYBIND11_MODULE(imu_py, m) {
         .def("get_timestamp", &IMUDriver::get_timestamp,
             "系统时间戳           us     — IMU 内部时钟 (开机累积)")
         .def("get_temperature", &IMUDriver::get_temperature,
-            "传感器温度           °C");
+            "传感器温度           °C")
+        .def("get_cycle", &IMUDriver::get_cycle,
+            "帧计数器 0-255 — 检测丢帧");
 }

@@ -79,6 +79,8 @@ typedef struct {
     uint8_t nv_pos;
     uint8_t nv_heading;
     uint8_t ins_status;
+    uint8_t running_status[6];
+    uint8_t cycle;
 } can_sensor_data_t;
 
 typedef struct {

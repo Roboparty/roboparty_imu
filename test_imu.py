@@ -54,7 +54,7 @@ def main():
                    f'{"AccX":>7s} {"AccY":>7s} {"AccZ":>7s}  '
                    f'{"MagX":>7s} {"MagY":>7s} {"MagZ":>7s}  '
                    f'{"R":>7s} {"P":>7s} {"Y":>7s}  '
-                   f'{"Qw":>7s} {"Qx":>7s} {"Qy":>7s} {"Qz":>7s}  {"Temp":>5s}')
+                   f'{"Qw":>7s} {"Qx":>7s} {"Qy":>7s} {"Qz":>7s}  {"Temp":>5s}  Cyc')
             unt = (f'{"(s)":>6s}  {"(°/s)":>7s} {"(°/s)":>7s} {"(°/s)":>7s}  '
                    f'{"(m/s²)":>7s} {"(m/s²)":>7s} {"(m/s²)":>7s}  '
                    f'{"(uT)":>7s} {"(uT)":>7s} {"(uT)":>7s}  '
@@ -79,6 +79,7 @@ def main():
             q = imu.get_quat()
             e = imu.get_euler()
             t = imu.get_temperature()
+            c = imu.get_cycle()
             cnt += 1
             now = time.time()
             if not args.quiet and now - last >= args.interval:
@@ -89,7 +90,7 @@ def main():
                           f'{a[0]:7.3f} {a[1]:7.3f} {a[2]:7.3f}  '
                           f'{m[0]:7.1f} {m[1]:7.1f} {m[2]:7.1f}  '
                           f'{e[0]:7.2f} {e[1]:7.2f} {e[2]:7.2f}  '
-                          f'{q[0]:7.3f} {q[1]:7.3f} {q[2]:7.3f} {q[3]:7.3f}  {t:5.1f}')
+                          f'{q[0]:7.3f} {q[1]:7.3f} {q[2]:7.3f} {q[3]:7.3f}  {t:5.1f}  {c:3d}')
                 else:
                     print(f'{el:6.2f}  {e[0]:8.2f} {e[1]:8.2f} {e[2]:8.2f}  {t:5.1f}')
                 last = now

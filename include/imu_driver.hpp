@@ -47,6 +47,7 @@ class IMUDriver {
     virtual std::vector<float> get_euler() { return euler_; }
     virtual uint64_t get_timestamp() { return timestamp_; }
     virtual float get_temperature() { return temperature_; }
+    virtual uint8_t get_cycle() { return cycle_; }
 
    protected:
     std::shared_ptr<spdlog::logger> logger_;
@@ -58,5 +59,6 @@ class IMUDriver {
     std::vector<float> mag_{0.f, 0.f, 0.f};             // x, y, z uT
     std::vector<float> euler_{0.f, 0.f, 0.f};           // roll, pitch, yaw (deg)
     uint64_t timestamp_{0};                             // us
-    float temperature_{0.f}; // temperature
+    float temperature_{0.f};
+    uint8_t cycle_{0};                                  // frame cycle counter
 };
