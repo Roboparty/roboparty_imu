@@ -20,20 +20,24 @@ make -j$(nproc)
 ## 快速上手
 
 ```bash
-# 连接 IMU 后直接运行 (默认无限循环)
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600
+# 只需指定型号，自动探测串口
+python3 test_imu.py MCT7123
 
-# 仅欧拉角 + 温度 (默认输出)
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -d 5
+# 指定 CAN 口
+python3 test_imu.py MCT7123 --can can0
+python3 test_imu.py HIPNUC --can can0
 
-# 全部数据: 陀螺/加表/磁力计/四元数/欧拉角/温度/Cycle
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -a
+# 指定串口
+python3 test_imu.py MCT7123 --serial /dev/ttyUSB1
 
-# 安静模式, 只打速率
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -d 5 -q
+# 列出可用设备
+python3 test_imu.py --list
 
-# HIPNUC
-python3 test_imu.py HIPNUC serial /dev/ttyUSB0 115200
+# 全部数据
+python3 test_imu.py MCT7123 -a
+
+# 安静模式
+python3 test_imu.py MCT7123 -d 5 -q
 ```
 
 输出示例 (默认仅欧拉角+温度):
@@ -58,11 +62,13 @@ python3 test_imu.py HIPNUC serial /dev/ttyUSB0 115200
 
 | 参数 | 说明 |
 |------|------|
-| `type` | `MCT7123` / `HIPNUC` |
-| `interface` | `serial` / `can` / `canfd` |
-| `-d SECONDS` | 运行时长, 0=无限 (Ctrl+C 退出) |
-| `-a` | 显示全部 20 列 (Gyr/Acc/Mag/Quat/Euler/Temp/Cycle) |
-| `-q` | 安静模式, 只打速率摘要 |
+| `TYPE` | 唯一必填: `MCT7123` / `HIPNUC` |
+| `--serial DEV` | 指定串口 (默认自动扫描 /dev/ttyUSB*) |
+| `--can IFACE` | 指定 CAN/CANFD 口 (如 can0) |
+| `-d SEC` | 运行时长, 0=无限 (Ctrl+C 退出) |
+| `-a` | 显示全部 20 列 |
+| `-q` | 安静模式, 只打速率 |
+| `--list` | 列出可用串口设备 |
 
 ## Python API
 

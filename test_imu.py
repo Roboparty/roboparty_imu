@@ -1,50 +1,108 @@
 #!/usr/bin/env python3
-"""IMU test reader — MCT7123 / HIPNUC, serial / CAN / CANFD.
+"""IMU 测试工具 — 只需指定型号，自动探测接口。
 
 Usage:
-  python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600
-  python3 test_imu.py MCT7123 canfd  can0
-  python3 test_imu.py HIPNUC  serial /dev/ttyUSB0 115200
-  python3 test_imu.py HIPNUC  can    can0
+  python3 test_imu.py MCT7123               # 自动探测
+  python3 test_imu.py MCT7123 --can can0    # 指定 CAN 口
+  python3 test_imu.py MCT7123 --serial /dev/ttyUSB0  # 指定串口
+  python3 test_imu.py --list                # 列出设备
 """
-import sys, os, time, argparse
-
-sys.stdout.flush()
-os.dup2(os.open(os.devnull, os.O_WRONLY), 2)
+import sys, os, time, argparse, glob
 
 RAD2DEG = 57.29578
 
+DEFAULTS = {
+    'MCT7123': {'baudrate': 921600, 'iface': 'serial'},
+    'HIPNUC':  {'baudrate': 115200, 'iface': 'serial'},
+}
+
+def scan_serial():
+    """返回可用的串口 (ttyUSB / ttyAMA)."""
+    devs = []
+    for p in sorted(glob.glob('/dev/ttyUSB*')) + sorted(glob.glob('/dev/ttyAMA*')):
+        if os.path.exists(p):
+            devs.append(p)
+    return devs
+
 def main():
-    ap = argparse.ArgumentParser(description='IMU test reader')
-    ap.add_argument('type', choices=['MCT7123', 'HIPNUC'])
-    ap.add_argument('interface', choices=['serial', 'can', 'canfd'])
-    ap.add_argument('device')
-    ap.add_argument('baudrate', type=int, nargs='?', default=0)
+    ap = argparse.ArgumentParser(
+        description='IMU 测试工具 — MCT7123 / HIPNUC',
+        epilog='示例: python3 test_imu.py MCT7123',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('type', nargs='?', default=None, metavar='TYPE',
+                    help='IMU 型号 (MCT7123 / HIPNUC; 不提供则提示用法)')
+    ap.add_argument('--serial', metavar='DEV', help='指定串口设备')
+    ap.add_argument('--can', metavar='IFACE', help='指定 CAN/CANFD 接口 (如 can0)')
+    ap.add_argument('--list', action='store_true', help='列出可用设备')
     ap.add_argument('-d', '--duration', type=float, default=0,
-                    help='seconds (0=forever)')
-    ap.add_argument('-i', '--interval', type=float, default=0.5)
+                    help='运行时长 秒 (0=无限循环)')
+    ap.add_argument('-i', '--interval', type=float, default=0.5,
+                    help='打印间隔 秒 (默认 0.5)')
     ap.add_argument('-a', '--all', action='store_true',
-                    help='show all: Gyr/Acc/Mag/Quat + Euler')
+                    help='显示全部: Gyr/Acc/Mag/Quat/Euler/Temp/Cycle')
     ap.add_argument('-q', '--quiet', action='store_true',
-                    help='summary only')
-    ap.add_argument('-b', '--build-dir', default=None)
+                    help='安静模式, 只打印速率')
+    ap.add_argument('-b', '--build-dir', default=None,
+                    help='build 目录 (默认 ./build)')
     args = ap.parse_args()
+
+    if args.list:
+        serials = scan_serial()
+        print('串口:', ', '.join(serials) if serials else '(无)')
+        print('CAN:   (使用 --can can0 指定)')
+        return
+
+    if args.type is None:
+        print('请指定 IMU 型号: MCT7123 或 HIPNUC', file=sys.stderr)
+        print('示例: python3 test_imu.py MCT7123', file=sys.stderr)
+        sys.exit(1)
+
+    if args.type not in ('MCT7123', 'HIPNUC'):
+        print(f'无效型号: {args.type}, 可选: MCT7123, HIPNUC', file=sys.stderr)
+        sys.exit(1)
+
+    # Determine interface + device + baudrate
+    imu_type = args.type
+    baudrate = DEFAULTS[imu_type]['baudrate']
+    iface_type = 'canfd' if (imu_type == 'MCT7123' and args.can) else \
+                 'can'   if (imu_type == 'HIPNUC'  and args.can) else \
+                 'serial'
+
+    if args.serial:
+        device = args.serial
+    elif args.can:
+        device = args.can
+    else:
+        # Auto-detect: try serial first
+        serials = scan_serial()
+        if serials:
+            device = serials[0]
+            iface_type = 'serial'
+        else:
+            print('未找到串口设备，请用 --can 或 --serial 指定', file=sys.stderr)
+            sys.exit(1)
+
+    # Silence C++ spdlog noise
+    sys.stdout.flush()
+    os.dup2(os.open(os.devnull, os.O_WRONLY), 2)
 
     sys.path.insert(0, args.build_dir or
                     os.path.join(os.path.dirname(__file__) or '.', 'build'))
     try:
         import imu_py
     except ImportError:
-        sys.exit('ERROR: imu_py not found. Build first.')
+        print('ERROR: imu_py not found. 请先编译', flush=True)
+        os._exit(1)
 
     forever = (args.duration <= 0)
-    print(f'[{args.type}] {args.interface}:{args.device} '
-          f'{"∞" if forever else args.duration}s', end=' ', flush=True)
+    print(f'[{args.type}] {iface_type}:{device} {baudrate}bps '
+          f'{"∞" if forever else f"{args.duration}s"}', end=' ', flush=True)
     try:
-        imu = imu_py.IMUDriver.create_imu(1, args.interface, args.device,
-                                          args.type, args.baudrate)
+        imu = imu_py.IMUDriver.create_imu(1, iface_type, device,
+                                          args.type, baudrate)
     except RuntimeError as e:
-        sys.exit(f'FAIL {e}')
+        print(f'FAIL: {e}', flush=True)
+        os._exit(1)
     time.sleep(0.3)
     print('OK\n')
 
@@ -99,7 +157,7 @@ def main():
         pass
 
     elapsed = time.time() - start
-    print(f'\n{args.type} {args.interface}  {elapsed:.1f}s  {cnt} reads  {cnt/elapsed:.0f} Hz  ', end='')
+    print(f'\n{args.type} {iface_type}  {elapsed:.1f}s  {cnt} reads  {cnt/elapsed:.0f} Hz  ', end='')
     print('OK' if cnt > 0 else 'FAIL')
 
 if __name__ == '__main__':
