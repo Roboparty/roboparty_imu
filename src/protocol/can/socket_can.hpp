@@ -90,4 +90,5 @@ class IMUSocketCAN {
     void remove_can_callback(const CanCbkId id);
     void clear_can_callbacks();
     void set_key_extractor(CanCbkKeyExtractor extractor);
+    int send(const canfd_frame &frame);
 };

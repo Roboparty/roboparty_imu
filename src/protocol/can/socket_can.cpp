@@ -152,3 +152,13 @@ void IMUSocketCAN::set_key_extractor(CanCbkKeyExtractor extractor) {
     std::lock_guard<std::mutex> lock(can_callback_mutex_);
     key_extractor_ = std::move(extractor);
 }
+
+int IMUSocketCAN::send(const canfd_frame &frame) {
+    if (sockfd_ == INIT_FD) return -1;
+    ssize_t n = ::write(sockfd_, &frame, CANFD_MTU);
+    if (n < 0) {
+        logger_->warn("CAN send error on {}: {}", interface_, strerror(errno));
+        return -1;
+    }
+    return (int)n;
+}

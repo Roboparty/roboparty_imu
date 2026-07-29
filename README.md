@@ -6,69 +6,78 @@ RPO 双足机器人 IMU 驱动库 — C++ / Python 绑定
 
 | 类型 | 接口 | 协议 |
 |------|------|------|
-| **HIPNUC** (HI226/HI229 等) | serial, can | HiPNUC 私有协议 (5A A5 帧头) + CAN J1939 |
 | **MCT7123** (MD7123) | serial, canfd | EB 90 固定 64B 帧 / CANFD 64B 一体帧 |
+| **HIPNUC** (HI226/HI229 等) | serial, can | HiPNUC 私有协议 (5A A5 帧头) + CAN J1939 |
 
-## Python 测试脚本
+## 构建
 
 ```bash
-# MCT7123 串口 (默认 921600bps)
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j$(nproc)
+```
 
-# MCT7123 CANFD
-python3 test_imu.py MCT7123 canfd can0
+也可以通过 colcon 在 ROS2 workspace 中构建：`source /opt/ros/humble/setup.bash && colcon build`。
 
-# 仅打摘要，安静模式
-python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -d 5 -q
+## 快速上手
 
-# 无限循环，Ctrl+C 退出
+```bash
+# 连接 IMU 后直接运行测试脚本
 python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -d 0
 
-# HIPNUC 串口
+# 安静模式, 只打印速率摘要
+python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -q
+
+# HIPNUC
 python3 test_imu.py HIPNUC serial /dev/ttyUSB0 115200
-
-# HIPNUC 经典 CAN
-python3 test_imu.py HIPNUC can can0
 ```
 
-参数:
+输出示例：
+```
+──    1.0s  ts     5678ms
+  GyrX    0.03  GyrY   -0.02  GyrZ    0.01  °/s
+  AccX   0.015  AccY  -0.021  AccZ   9.813  m/s²
+  MagX     0.0  MagY     0.0  MagZ     0.0  uT
+  R   -0.15  P    0.08  Y  -20.01  °
+  Qw   0.985  Qx  -0.001  Qy   0.001  Qz  -0.174  Temp  35.6°C
+```
 
-```
-python3 test_imu.py -h
-  type            MCT7123 | HIPNUC
-  interface       接口: serial | can | canfd
-  device          设备路径 (/dev/ttyUSB0, can0 等)
-  baudrate        波特率 (serial 必须; can/canfd 忽略)
-  -d SECONDS      运行时长 (0=无限循环, Ctrl+C 退出)
-  -i SECONDS      打印间隔 (默认 0.5s)
-  -q              安静模式, 只打印摘要
-```
+| 参数 | 说明 |
+|------|------|
+| `type` | `MCT7123` / `HIPNUC` |
+| `interface` | `serial` / `can` / `canfd` |
+| `-d 0` | 无限循环 (Ctrl+C 退出) |
+| `-q` | 只打印摘要 |
 
 ## Python API
+
+所有方法线程安全, 可通过 `help(imu_py.IMUDriver)` 查看行内文档。
+
+| 方法 | 返回 | 说明 |
+|------|------|------|
+| `get_ang_vel()` | `[x, y, z]` rad/s | 角速度 |
+| `get_lin_acc()` | `[x, y, z]` m/s² | 线加速度 |
+| `get_mag()` | `[x, y, z]` uT | 磁场强度 (9 轴模式) |
+| `get_quat()` | `[w, x, y, z]` | 姿态四元数 |
+| `get_euler()` | `[roll, pitch, yaw]` ° | 欧拉角 (硬件直接输出) |
+| `get_timestamp()` | `int` us | IMU 内部时钟 |
+| `get_temperature()` | `float` °C | 传感器温度 |
 
 ```python
 import imu_py
 
-# 创建 IMU 实例
 imu = imu_py.IMUDriver.create_imu(
-    imu_id=1,                    # 节点 ID (CAN 模式用于多设备路由)
+    imu_id=1,
     interface_type="serial",     # "serial" | "can" | "canfd"
-    interface="/dev/ttyUSB0",    # 设备路径
+    interface="/dev/ttyUSB0",
     imu_type="MCT7123",          # "MCT7123" | "HIPNUC"
     baudrate=921600              # serial 必须, can/canfd 忽略
 )
 
-# 读取数据 (线程安全)
-gyr   = imu.get_ang_vel()        # [x, y, z] rad/s   角速度
-acc   = imu.get_lin_acc()        # [x, y, z] m/s²   线加速度
-mag   = imu.get_mag()            # [x, y, z] uT     磁场强度 (9 轴模式)
-quat  = imu.get_quat()           # [w, x, y, z]     姿态四元数
+gyr   = imu.get_ang_vel()        # [x, y, z] rad/s
+acc   = imu.get_lin_acc()        # [x, y, z] m/s²
 euler = imu.get_euler()          # [roll, pitch, yaw] 度
-ts    = imu.get_timestamp()      # us               系统时间戳
-temp  = imu.get_temperature()    # °C               传感器温度
 ```
-
-> `help(imu_py.IMUDriver)` 查看完整文档。
 
 ## C++ API
 
@@ -86,7 +95,21 @@ uint64_t         ts     = imu->get_timestamp();      // us
 float            temp   = imu->get_temperature();    // °C
 ```
 
-## MCT7123 坐标系说明
+## CAN / CANFD
+
+同一条 CAN 总线可以同时挂载 HIPNUC (经典 CAN) 和 MCT7123 (CANFD)，各自按帧长度分流。
+
+```python
+# HIPNUC 经典 CAN (≤8 字节)
+imu = imu_py.IMUDriver.create_imu(0, "can", "can0", "HIPNUC")
+
+# MCT7123 CANFD (64 字节)
+imu = imu_py.IMUDriver.create_imu(1, "canfd", "can0", "MCT7123")
+```
+
+C++ 端可通过 `IMUSocketCAN::get_instance("can0")->send(frame)` 发送 CAN 帧，用于配置/命令下发。
+
+## MCT7123 坐标系
 
 MD7123 使用**坐标系 9**（手册默认值）：
 
@@ -94,4 +117,4 @@ MD7123 使用**坐标系 9**（手册默认值）：
 - 标签 -Uy → Y 正
 - 标签 +Ux → Z 正
 
-机器人安装：正面朝右，接插件朝天。静止时 AccZ ≈ -9.81 m/s²（重力）。
+机器人安装：正面朝右，接插件朝天。静止时 AccZ ≈ -9.81 m/s²。

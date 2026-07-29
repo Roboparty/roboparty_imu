@@ -47,6 +47,9 @@ typedef struct {
  */
 int mct7123_input(mct7123_raw_t *raw, uint8_t data);
 
+/** CRC16-CCITT over payload bytes (poly 0x1021, init 0xFFFF). */
+uint16_t mct7123_crc16(const uint8_t *data, size_t len);
+
 /** Parse payload into float fields after successful mct7123_input(). */
 void mct7123_parse_imu(const uint8_t payload[64],
                        float *gyr_x, float *gyr_y, float *gyr_z,
@@ -59,6 +62,12 @@ void mct7123_parse_att(const uint8_t payload[64],
                        float *qw, float *qx, float *qy, float *qz,
                        float *temp, uint8_t *running_status, uint32_t *fusion_status,
                        uint64_t *systimer_us);
+
+/** MD7123 config frame (Msg_ID 0x83 / CAN ID 0x183). All pointers may be NULL. */
+void mct7123_parse_cfg(const uint8_t payload[64],
+                       uint8_t *sentence_ctrl, uint8_t *output_rate,
+                       uint8_t *orientation, uint8_t *fusion_mode,
+                       double *latitude, double *longitude, float *height);
 
 #ifdef __cplusplus
 }

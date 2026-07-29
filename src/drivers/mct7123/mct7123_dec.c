@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 /* CRC16-CCITT: poly 0x1021, init 0xFFFF */
-static uint16_t crc16_ccitt(const uint8_t *data, size_t len)
+uint16_t mct7123_crc16(const uint8_t *data, size_t len)
 {
     uint16_t crc = 0xFFFF;
     for (size_t i = 0; i < len; i++) {
@@ -103,7 +103,7 @@ int mct7123_input(mct7123_raw_t *raw, uint8_t data)
 
         /* verify CRC16 over payload[0..61], CRC at payload[62..63] */
         uint16_t crc_expected = le16(&raw->payload[62]);
-        uint16_t crc_calc = crc16_ccitt(raw->payload, 62);
+        uint16_t crc_calc = mct7123_crc16(raw->payload, 62);
         if (crc_calc != crc_expected) {
             raw->idx = 0;
             return -1;
@@ -159,4 +159,18 @@ void mct7123_parse_att(const uint8_t payload[64],
     if (running_status) {
         memcpy(running_status, payload + 42, 6);
     }
+}
+
+void mct7123_parse_cfg(const uint8_t payload[64],
+                       uint8_t *sentence_ctrl, uint8_t *output_rate,
+                       uint8_t *orientation, uint8_t *fusion_mode,
+                       double *latitude, double *longitude, float *height)
+{
+    if (sentence_ctrl) *sentence_ctrl = payload[0];
+    if (output_rate)   *output_rate   = payload[1];
+    if (orientation)   *orientation   = payload[2];
+    if (fusion_mode)   *fusion_mode   = payload[3];
+    if (latitude)      memcpy(latitude,  payload + 4,  8);
+    if (longitude)     memcpy(longitude, payload + 12, 8);
+    if (height)        memcpy(height,    payload + 20, 4);
 }
