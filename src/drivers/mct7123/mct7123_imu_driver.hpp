@@ -1,33 +1,31 @@
 #pragma once
 
 extern "C" {
-#include "hipnuc_dec.h"
-// #include "nmea_decode.h"
-#include "hipnuc_can_common.h"
-#include "hipnuc_j1939_parser.h"
-// #include "canopen_parser.h"
+#include "mct7123_dec.h"
 }
 
 #include <memory>
 #include <string>
-#include <thread>
-#include <atomic>
 #include <shared_mutex>
 
 #include "imu_driver.hpp"
 #include "protocol/can/socket_can.hpp"
 #include "protocol/serial/serial_port.hpp"
+#include "drivers/hipnuc/hipnuc_can_common.h"
 
-#define GRA_ACC     (9.8)
-#define DEG_TO_RAD  (0.01745329)
+#ifndef DEG_TO_RAD
+#define DEG_TO_RAD  (0.01745329f)
+#endif
 
-class HipnucIMUDriver : public IMUDriver {
+class Mct7123IMUDriver : public IMUDriver {
    public:
-    HipnucIMUDriver(uint16_t imu_id, const std::string& interface_type, const std::string& interface, const int baudrate=0);
-    ~HipnucIMUDriver();
+    Mct7123IMUDriver(uint16_t imu_id, const std::string& interface_type,
+                     const std::string& interface, const int baudrate=0);
+    ~Mct7123IMUDriver();
 
-    void can_rx_cbk(const canfd_frame& rx_frame);
     void serial_rx_cbk(const uint8_t* data, size_t length);
+    void can_rx_cbk(const canfd_frame& rx_frame);
+
     std::vector<float> get_ang_vel() override;
     std::vector<float> get_quat() override;
     std::vector<float> get_lin_acc() override;
@@ -41,8 +39,9 @@ class HipnucIMUDriver : public IMUDriver {
     std::string interface_type_;
     std::string interface_;
     mutable std::shared_mutex imu_mutex_;
-    std::shared_ptr<IMUSocketCAN> can_;
     std::shared_ptr<IMUSerialPort> serial_;
+    std::shared_ptr<IMUSocketCAN> can_;
+
+    mct7123_raw_t raw_;
     can_sensor_data_t sensor_data_;
-    hipnuc_raw_t raw_;
 };

@@ -27,6 +27,12 @@ void IMUSocketCAN::open(std::string interface) {
         throw std::runtime_error("Failed to create CAN socket");
     }
 
+    /* Enable CAN FD frame reception (backward compatible with classic CAN) */
+    int canfd_on = 1;
+    if (setsockopt(sockfd_, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on)) < 0) {
+        logger_->warn("CAN FD not supported on interface {}, falling back to classic CAN", interface);
+    }
+
     strncpy(if_request_.ifr_name, interface.c_str(), IFNAMSIZ);
     if (ioctl(sockfd_, SIOCGIFINDEX, &if_request_) == -1) {
         logger_->error("Unable to detect CAN interface {}", interface);
@@ -62,12 +68,12 @@ void IMUSocketCAN::open(std::string interface) {
         pthread_setname_np(pthread_self(), "can_rx");
         struct sched_param sp{}; sp.sched_priority = 80;
         if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
-            logger_->error("Failed to set realtime priority for IMU CAN RX thread");
+            logger_->warn("Failed to set realtime priority for IMU CAN RX thread");
         }
         fd_set descriptors;
         int maxfd = sockfd_;
         struct timeval timeout;
-        can_frame rx_frame;
+        canfd_frame rx_frame;
 
         while (receiving_) {
             FD_ZERO(&descriptors);
@@ -84,7 +90,7 @@ void IMUSocketCAN::open(std::string interface) {
             }
             if (sel_ret == 1) {
                 while (true){
-                    int len = ::read(sockfd_, &rx_frame, CAN_MTU);
+                    int len = ::read(sockfd_, &rx_frame, sizeof(canfd_frame));
                     if (len < 0) {
                         if (errno == EAGAIN || errno == EWOULDBLOCK) {
                             break; 

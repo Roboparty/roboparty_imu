@@ -5,13 +5,16 @@
  * @file socket_can.hpp
  * @brief SocketCAN interface declaration for CAN/CAN FD frame reception.
  * @details Provides the IMUSocketCAN singleton class that wraps Linux
- *          SocketCAN socket operations and delivers parsed frames
- *          to registered callback handlers.
+ *          SocketCAN socket operations and delivers both classic CAN
+ *          (len <= 8) and CAN FD (len up to 64) frames to registered
+ *          callbacks via the unified canfd_frame struct.
+ *          Callbacks are responsible for filtering by frame length.
  */
 
 #pragma once
 
 #include <linux/can.h>
+#include <linux/can/raw.h>
 #include <net/if.h>
 #include <pthread.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -33,10 +36,10 @@
 constexpr const int INIT_FD = -1;
 constexpr const int TIMEOUT_SEC = 0;
 constexpr const int TIMEOUT_USEC = 1000;
-using CanCbkFunc = std::function<void(const can_frame &)>;
+using CanCbkFunc = std::function<void(const canfd_frame &)>;
 using CanCbkId = uint16_t;
 using CanCbkMap = std::unordered_map<CanCbkId, CanCbkFunc>;
-using CanCbkKeyExtractor = std::function<CanCbkId(const can_frame &)>;
+using CanCbkKeyExtractor = std::function<CanCbkId(const canfd_frame &)>;
 
 class IMUSocketCAN {
    private:
@@ -51,7 +54,7 @@ class IMUSocketCAN {
     std::thread receiver_thread_;
     CanCbkMap can_callback_list_;
     std::mutex can_callback_mutex_;
-    CanCbkKeyExtractor key_extractor_ = [](const can_frame &frame) -> CanCbkId {
+    CanCbkKeyExtractor key_extractor_ = [](const canfd_frame &frame) -> CanCbkId {
         return static_cast<CanCbkId>(frame.can_id);
     };
 
