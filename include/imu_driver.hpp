@@ -22,6 +22,8 @@
 #include <string>
 #include <vector>
 
+#include "imu_sensor_data.h"
+
 class IMUDriver {
    public:
 
@@ -40,25 +42,16 @@ class IMUDriver {
                                                 const std::string& imu_type, const int baudrate=0);
 
     virtual uint16_t get_imu_id() { return imu_id_; }
-    virtual std::vector<float> get_ang_vel() { return ang_vel_; }
-    virtual std::vector<float> get_quat() { return quat_; }
-    virtual std::vector<float> get_lin_acc() { return lin_acc_; }
-    virtual std::vector<float> get_mag() { return mag_; }
-    virtual std::vector<float> get_euler() { return euler_; }
-    virtual uint64_t get_timestamp() { return timestamp_; }
-    virtual float get_temperature() { return temperature_; }
-    virtual uint8_t get_cycle() { return cycle_; }
+    virtual std::vector<float> get_ang_vel() { return {0.f, 0.f, 0.f}; }
+    virtual std::vector<float> get_quat() { return {0.f, 0.f, 0.f, 0.f}; }
+    virtual std::vector<float> get_lin_acc() { return {0.f, 0.f, 0.f}; }
+    virtual std::vector<float> get_mag() { return {0.f, 0.f, 0.f}; }
+    virtual std::vector<float> get_euler() { return {0.f, 0.f, 0.f}; }
+    virtual uint64_t get_timestamp() { return 0; }
+    virtual float get_temperature() { return 0.f; }
+    virtual uint8_t get_cycle() { return 0; }
 
    protected:
     std::shared_ptr<spdlog::logger> logger_;
-    uint16_t imu_id_;
-
-    std::vector<float> quat_{0.f, 0.f, 0.f, 0.f};       // w, x, y, z
-    std::vector<float> ang_vel_{0.f, 0.f, 0.f};         // x, y, z rad/s
-    std::vector<float> lin_acc_{0.f, 0.f, 0.f};         // x, y, z m/s²
-    std::vector<float> mag_{0.f, 0.f, 0.f};             // x, y, z uT
-    std::vector<float> euler_{0.f, 0.f, 0.f};           // roll, pitch, yaw (deg)
-    uint64_t timestamp_{0};                             // us
-    float temperature_{0.f};
-    uint8_t cycle_{0};                                  // frame cycle counter
+    uint16_t imu_id_{0};
 };

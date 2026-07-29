@@ -12,7 +12,7 @@ static void json_append(can_json_output_t *out, const char *fmt, ...)
     if (written > 0) out->length += written;
 }
 
-int hipnuc_can_to_json(const can_sensor_data_t *data, int msg_type, can_json_output_t *output)
+int hipnuc_can_to_json(const imu_sensor_data_t *data, int msg_type, can_json_output_t *output)
 {
     if (!data || !output) return -1;
     output->length = 0;

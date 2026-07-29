@@ -11,7 +11,6 @@ extern "C" {
 #include "imu_driver.hpp"
 #include "protocol/can/socket_can.hpp"
 #include "protocol/serial/serial_port.hpp"
-#include "drivers/hipnuc/hipnuc_can_common.h"
 
 #ifndef DEG_TO_RAD
 #define DEG_TO_RAD  (0.01745329f)
@@ -44,5 +43,5 @@ class Mct7123IMUDriver : public IMUDriver {
     std::shared_ptr<IMUSocketCAN> can_;
 
     mct7123_raw_t raw_;
-    can_sensor_data_t sensor_data_;
+    imu_sensor_data_t sensor_data_;
 };
