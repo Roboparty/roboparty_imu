@@ -6,12 +6,9 @@ Usage:
   python3 test_imu.py MCT7123 canfd  can0
   python3 test_imu.py HIPNUC  serial /dev/ttyUSB0 115200
   python3 test_imu.py HIPNUC  can    can0
-
-Options: -d SEC (0=forever)  -i SEC  -q  -b BUILD_DIR
 """
 import sys, os, time, argparse
 
-# Silence spdlog noise on stderr
 sys.stdout.flush()
 os.dup2(os.open(os.devnull, os.O_WRONLY), 2)
 
@@ -24,9 +21,12 @@ def main():
     ap.add_argument('device')
     ap.add_argument('baudrate', type=int, nargs='?', default=0)
     ap.add_argument('-d', '--duration', type=float, default=0,
-                    help='seconds (0=forever, Ctrl+C to stop)')
+                    help='seconds (0=forever)')
     ap.add_argument('-i', '--interval', type=float, default=0.5)
-    ap.add_argument('-q', '--quiet', action='store_true')
+    ap.add_argument('-a', '--all', action='store_true',
+                    help='show all: Gyr/Acc/Mag/Quat + Euler')
+    ap.add_argument('-q', '--quiet', action='store_true',
+                    help='summary only')
     ap.add_argument('-b', '--build-dir', default=None)
     args = ap.parse_args()
 
@@ -48,6 +48,25 @@ def main():
     time.sleep(0.3)
     print('OK\n')
 
+    if not args.quiet:
+        if args.all:
+            hdr = (f'{"Time":>6s}  {"GyrX":>7s} {"GyrY":>7s} {"GyrZ":>7s}  '
+                   f'{"AccX":>7s} {"AccY":>7s} {"AccZ":>7s}  '
+                   f'{"MagX":>7s} {"MagY":>7s} {"MagZ":>7s}  '
+                   f'{"R":>7s} {"P":>7s} {"Y":>7s}  '
+                   f'{"Qw":>7s} {"Qx":>7s} {"Qy":>7s} {"Qz":>7s}  {"Temp":>5s}')
+            unt = (f'{"(s)":>6s}  {"(°/s)":>7s} {"(°/s)":>7s} {"(°/s)":>7s}  '
+                   f'{"(m/s²)":>7s} {"(m/s²)":>7s} {"(m/s²)":>7s}  '
+                   f'{"(uT)":>7s} {"(uT)":>7s} {"(uT)":>7s}  '
+                   f'{"(°)":>7s} {"(°)":>7s} {"(°)":>7s}  '
+                   f'{"":>7s} {"":>7s} {"":>7s} {"":>7s}  {"(°C)":>5s}')
+        else:
+            hdr = f'{"Time":>6s}  {"R":>8s} {"P":>8s} {"Y":>8s}  {"Temp":>5s}'
+            unt = f'{"(s)":>6s}  {"(°)":>8s} {"(°)":>8s} {"(°)":>8s}  {"(°C)":>5s}'
+        print(hdr)
+        print(unt)
+        print('─' * len(hdr))
+
     start = time.time()
     last = 0
     cnt = 0
@@ -60,17 +79,19 @@ def main():
             q = imu.get_quat()
             e = imu.get_euler()
             t = imu.get_temperature()
-            ts = imu.get_timestamp()
             cnt += 1
             now = time.time()
             if not args.quiet and now - last >= args.interval:
                 el = now - start
-                print(f'── {el:6.1f}s  ts {ts/1000:8.0f}ms')
-                print(f'  GyrX {g[0]*RAD2DEG:7.2f}  GyrY {g[1]*RAD2DEG:7.2f}  GyrZ {g[2]*RAD2DEG:7.2f}  °/s')
-                print(f'  AccX {a[0]:7.3f}  AccY {a[1]:7.3f}  AccZ {a[2]:7.3f}  m/s²')
-                print(f'  MagX {m[0]:7.1f}  MagY {m[1]:7.1f}  MagZ {m[2]:7.1f}  uT')
-                print(f'  R {e[0]:7.2f}  P {e[1]:7.2f}  Y {e[2]:7.2f}  °')
-                print(f'  Qw {q[0]:7.3f}  Qx {q[1]:7.3f}  Qy {q[2]:7.3f}  Qz {q[3]:7.3f}  Temp {t:5.1f}°C')
+                if args.all:
+                    gd = [v * RAD2DEG for v in g]
+                    print(f'{el:6.2f}  {gd[0]:7.2f} {gd[1]:7.2f} {gd[2]:7.2f}  '
+                          f'{a[0]:7.3f} {a[1]:7.3f} {a[2]:7.3f}  '
+                          f'{m[0]:7.1f} {m[1]:7.1f} {m[2]:7.1f}  '
+                          f'{e[0]:7.2f} {e[1]:7.2f} {e[2]:7.2f}  '
+                          f'{q[0]:7.3f} {q[1]:7.3f} {q[2]:7.3f} {q[3]:7.3f}  {t:5.1f}')
+                else:
+                    print(f'{el:6.2f}  {e[0]:8.2f} {e[1]:8.2f} {e[2]:8.2f}  {t:5.1f}')
                 last = now
             time.sleep(0.0005)
     except KeyboardInterrupt:

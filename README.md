@@ -32,15 +32,16 @@ python3 test_imu.py MCT7123 serial /dev/ttyUSB0 921600 -q
 python3 test_imu.py HIPNUC serial /dev/ttyUSB0 115200
 ```
 
-输出示例：
+输出示例（默认仅欧拉角+温度）：
 ```
-──    1.0s  ts     5678ms
-  GyrX    0.03  GyrY   -0.02  GyrZ    0.01  °/s
-  AccX   0.015  AccY  -0.021  AccZ   9.813  m/s²
-  MagX     0.0  MagY     0.0  MagZ     0.0  uT
-  R   -0.15  P    0.08  Y  -20.01  °
-  Qw   0.985  Qx  -0.001  Qy   0.001  Qz  -0.174  Temp  35.6°C
+  Time         R        P        Y   Temp
+   (s)       (°)      (°)      (°)   (°C)
+─────────────────────────────────────────
+  0.00     -0.17    -2.07   -11.47   36.2
+  1.00     -0.16    -2.07   -11.47   36.2
 ```
+
+`-a` 显示完整表格（陀螺/加表/磁力计/四元数+欧拉角）。
 
 | 参数 | 说明 |
 |------|------|
