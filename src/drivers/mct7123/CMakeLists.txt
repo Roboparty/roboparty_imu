@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0
 add_library(mct7123_imu STATIC
     mct7123_dec.c
-    mct7123_imu_driver.cpp
+    mct7123_serial_driver.cpp
+    mct7123_can_driver.cpp
 )
 target_include_directories(mct7123_imu
   PUBLIC
