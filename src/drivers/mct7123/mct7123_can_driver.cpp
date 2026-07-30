@@ -2,22 +2,32 @@
 #include <cstring>
 
 Mct7123CanDriver::Mct7123CanDriver(uint16_t imu_id, const std::string& interface)
-    : IMUDriver(), interface_(interface)
+    : IMUDriver(), interface_(interface),
+      callback_ids_{imu_id, static_cast<CanCbkId>(imu_id + 1),
+                    static_cast<CanCbkId>(imu_id + 2)}
 {
     imu_id_ = imu_id;
     memset(&sensor_data_, 0, sizeof(sensor_data_));
 
     can_ = IMUSocketCAN::get_instance(interface_);
     CanCbkFunc can_cb = std::bind(&Mct7123CanDriver::can_rx_cbk, this, std::placeholders::_1);
-    can_->add_can_callback(can_cb, imu_id_);
     can_->set_key_extractor([](const canfd_frame &frame) -> CanCbkId {
         return frame.can_id & 0x7F;
     });
+    // CAN_ID_Config is a base ID: +1 is IMU, +2 is attitude, +3 is config.
+    // imu_id is the low seven bits of the first data frame ID (normally 1).
+    for (CanCbkId callback_id : callback_ids_) {
+        can_->add_can_callback(can_cb, callback_id);
+    }
 }
 
 Mct7123CanDriver::~Mct7123CanDriver()
 {
-    if (can_) can_->remove_can_callback(imu_id_);
+    if (can_) {
+        for (CanCbkId callback_id : callback_ids_) {
+            can_->remove_can_callback(callback_id);
+        }
+    }
 }
 
 void Mct7123CanDriver::can_rx_cbk(const canfd_frame& rx_frame)

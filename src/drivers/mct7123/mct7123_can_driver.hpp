@@ -5,6 +5,7 @@ extern "C" {
 }
 
 #include <memory>
+#include <array>
 #include <string>
 #include <shared_mutex>
 
@@ -32,7 +33,10 @@ class Mct7123CanDriver : public IMUDriver {
     uint8_t get_cycle() override;
 
    private:
+    static constexpr size_t kFrameTypeCount = 3;
+
     std::string interface_;
+    std::array<CanCbkId, kFrameTypeCount> callback_ids_;
     mutable std::shared_mutex imu_mutex_;
     std::shared_ptr<IMUSocketCAN> can_;
 
