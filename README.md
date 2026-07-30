@@ -20,12 +20,13 @@ make -j$(nproc)
 ## 快速上手
 
 ```bash
-# 只需指定型号，自动探测串口
-python3 test_imu.py MCT7123
+# 只需指定型号，自动探测接口（串口优先，无串口则走默认 CAN）
+python3 test_imu.py MCT7123       # → can0, id=1
+python3 test_imu.py HIPNUC        # → can0, id=8
 
-# 指定 CAN 口
-python3 test_imu.py MCT7123 --can can0
-python3 test_imu.py HIPNUC --can can0
+# 指定 CAN 口或 ID
+python3 test_imu.py HIPNUC --can can1
+python3 test_imu.py HIPNUC --id 9
 
 # 指定串口
 python3 test_imu.py MCT7123 --serial /dev/ttyUSB1
@@ -34,7 +35,7 @@ python3 test_imu.py MCT7123 --serial /dev/ttyUSB1
 python3 test_imu.py --list
 
 # 全部数据
-python3 test_imu.py MCT7123 -a
+python3 test_imu.py HIPNUC -a
 
 # 安静模式
 python3 test_imu.py MCT7123 -d 5 -q
@@ -64,7 +65,8 @@ python3 test_imu.py MCT7123 -d 5 -q
 |------|------|
 | `TYPE` | 唯一必填: `MCT7123` / `HIPNUC` |
 | `--serial DEV` | 指定串口 (默认自动扫描 /dev/ttyUSB*) |
-| `--can IFACE` | 指定 CAN/CANFD 口 (如 can0) |
+| `--can IFACE` | 指定 CAN/CANFD 口 (无串口时默认 can0) |
+| `--id N` | CAN 源地址/节点 ID (默认: HIPNUC=8, MCT7123=1) |
 | `-d SEC` | 运行时长, 0=无限 (Ctrl+C 退出) |
 | `-a` | 显示全部 20 列 |
 | `-q` | 安静模式, 只打速率 |
@@ -125,8 +127,8 @@ uint8_t          cycle  = imu->get_cycle();          // 0-255
 同一条 CAN 总线可同时挂载 HIPNUC (经典 CAN, ≤8 字节) 和 MCT7123 (CANFD, 64 字节), 各自按帧长度分流。
 
 ```python
-# HIPNUC 经典 CAN (J1939)
-imu_h = imu_py.IMUDriver.create_imu(0, "can", "can0", "HIPNUC")
+# HIPNUC 经典 CAN (J1939, SA 通常为 8)
+imu_h = imu_py.IMUDriver.create_imu(8, "can", "can0", "HIPNUC")
 
 # MCT7123 CANFD (0x181=IMU, 0x182=Att, 0x183=Config)
 imu_m = imu_py.IMUDriver.create_imu(1, "canfd", "can0", "MCT7123")

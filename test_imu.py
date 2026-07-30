@@ -12,8 +12,8 @@ import sys, os, time, argparse, glob
 RAD2DEG = 57.29578
 
 DEFAULTS = {
-    'MCT7123': {'baudrate': 921600, 'iface': 'serial'},
-    'HIPNUC':  {'baudrate': 115200, 'iface': 'serial'},
+    'MCT7123': {'baudrate': 921600, 'id': 1, 'can': 'can0'},
+    'HIPNUC':  {'baudrate': 115200,  'id': 8, 'can': 'can0'},
 }
 
 def scan_serial():
@@ -38,6 +38,8 @@ def main():
                     help='运行时长 秒 (0=无限循环)')
     ap.add_argument('-i', '--interval', type=float, default=0.5,
                     help='打印间隔 秒 (默认 0.5)')
+    ap.add_argument('--id', type=int, default=None,
+                    help='CAN 源地址 (默认按型号: HIPNUC=8, MCT7123=1)')
     ap.add_argument('-a', '--all', action='store_true',
                     help='显示全部: Gyr/Acc/Mag/Quat/Euler/Temp/Cycle')
     ap.add_argument('-q', '--quiet', action='store_true',
@@ -73,14 +75,19 @@ def main():
     elif args.can:
         device = args.can
     else:
-        # Auto-detect: try serial first
+        # Auto-detect: try serial first, fall back to default CAN
         serials = scan_serial()
         if serials:
             device = serials[0]
             iface_type = 'serial'
+        elif DEFAULTS[imu_type].get('can'):
+            device = DEFAULTS[imu_type]['can']
+            iface_type = 'canfd' if imu_type == 'MCT7123' else 'can'
         else:
             print('未找到串口设备，请用 --can 或 --serial 指定', file=sys.stderr)
             sys.exit(1)
+
+    imu_id = args.id if args.id is not None else DEFAULTS[imu_type]['id']
 
     # Silence C++ spdlog noise
     sys.stdout.flush()
@@ -98,7 +105,7 @@ def main():
     print(f'[{args.type}] {iface_type}:{device} {baudrate}bps '
           f'{"∞" if forever else f"{args.duration}s"}', end=' ', flush=True)
     try:
-        imu = imu_py.IMUDriver.create_imu(1, iface_type, device,
+        imu = imu_py.IMUDriver.create_imu(imu_id, iface_type, device,
                                           args.type, baudrate)
     except RuntimeError as e:
         print(f'FAIL: {e}', flush=True)
