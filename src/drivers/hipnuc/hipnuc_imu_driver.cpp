@@ -13,10 +13,10 @@ HipnucIMUDriver::HipnucIMUDriver(uint16_t imu_id, const std::string& interface_t
     } else if (interface_type_ == "can") {
         can_ = IMUSocketCAN::get_instance(interface_);
         CanCbkFunc can_callback = std::bind(&HipnucIMUDriver::can_rx_cbk, this, std::placeholders::_1);
-        can_->add_can_callback(can_callback, imu_id_);
         can_->set_key_extractor([](const canfd_frame &frame) -> CanCbkId {
             return frame.can_id & 0x7F;
         });
+        can_subscription_ = CanCallbackSubscription(can_, imu_id_, can_callback);
     } else {
         throw std::runtime_error("Hipnuc driver only support CAN and SERIAL interface");
     }
@@ -25,8 +25,6 @@ HipnucIMUDriver::HipnucIMUDriver(uint16_t imu_id, const std::string& interface_t
 HipnucIMUDriver::~HipnucIMUDriver() {
     if (interface_type_ == "serial" && serial_) {
         serial_->close();
-    } else if (interface_type_ == "can" && can_) {
-        can_->remove_can_callback(imu_id_);
     }
 }
 

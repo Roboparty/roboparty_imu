@@ -16,19 +16,12 @@ Mct7123CanDriver::Mct7123CanDriver(uint16_t imu_id, const std::string& interface
     });
     // CAN_ID_Config is a base ID: +1 is IMU, +2 is attitude, +3 is config.
     // imu_id is the low seven bits of the first data frame ID (normally 1).
-    for (CanCbkId callback_id : callback_ids_) {
-        can_->add_can_callback(can_cb, callback_id);
+    for (size_t i = 0; i < callback_ids_.size(); ++i) {
+        can_subscriptions_[i] = CanCallbackSubscription(can_, callback_ids_[i], can_cb);
     }
 }
 
-Mct7123CanDriver::~Mct7123CanDriver()
-{
-    if (can_) {
-        for (CanCbkId callback_id : callback_ids_) {
-            can_->remove_can_callback(callback_id);
-        }
-    }
-}
+Mct7123CanDriver::~Mct7123CanDriver() = default;
 
 void Mct7123CanDriver::can_rx_cbk(const canfd_frame& rx_frame)
 {

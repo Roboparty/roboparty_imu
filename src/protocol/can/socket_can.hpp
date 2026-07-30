@@ -26,6 +26,7 @@
 
 #include <atomic>
 #include <cstdbool>
+#include <condition_variable>
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -38,11 +39,25 @@ constexpr const int TIMEOUT_SEC = 0;
 constexpr const int TIMEOUT_USEC = 1000;
 using CanCbkFunc = std::function<void(const canfd_frame &)>;
 using CanCbkId = uint16_t;
-using CanCbkMap = std::unordered_map<CanCbkId, CanCbkFunc>;
+using CanCbkToken = uint64_t;
+struct CanCbkEntry {
+    CanCbkToken token;
+    CanCbkFunc callback;
+    std::mutex mutex;
+    std::condition_variable cv;
+    bool enabled{true};
+    size_t running_count{0};
+};
+using CanCbkEntryPtr = std::shared_ptr<CanCbkEntry>;
+using CanCbkMap = std::unordered_map<CanCbkId, std::vector<CanCbkEntryPtr>>;
 using CanCbkKeyExtractor = std::function<CanCbkId(const canfd_frame &)>;
+
+class CanCallbackSubscription;
 
 class IMUSocketCAN {
    private:
+    friend class CanCallbackSubscription;
+
     std::string interface_;  // The network interface name
     int sockfd_ = -1;        // The file descriptor for the CAN socket
     std::atomic<bool> receiving_;
@@ -54,6 +69,7 @@ class IMUSocketCAN {
     std::thread receiver_thread_;
     CanCbkMap can_callback_list_;
     std::mutex can_callback_mutex_;
+    CanCbkToken next_callback_token_{1};
     CanCbkKeyExtractor key_extractor_ = [](const canfd_frame &frame) -> CanCbkId {
         return static_cast<CanCbkId>(frame.can_id);
     };
@@ -65,6 +81,9 @@ class IMUSocketCAN {
     }
     static std::shared_ptr<spdlog::logger> logger_;
     static std::unordered_map<std::string, std::shared_ptr<IMUSocketCAN>> instances_;
+
+    CanCbkToken add_can_callback(const CanCbkFunc callback, const CanCbkId id);
+    void remove_can_callback(const CanCbkId id, const CanCbkToken token);
 
    public:
     IMUSocketCAN(const IMUSocketCAN &) = delete;
@@ -86,9 +105,49 @@ class IMUSocketCAN {
     }
     void open(std::string interface);
     void close();
-    void add_can_callback(const CanCbkFunc callback, const CanCbkId id);
-    void remove_can_callback(const CanCbkId id);
     void clear_can_callbacks();
     void set_key_extractor(CanCbkKeyExtractor extractor);
     int send(const canfd_frame &frame);
+};
+
+class CanCallbackSubscription {
+   public:
+    CanCallbackSubscription() = default;
+    CanCallbackSubscription(std::shared_ptr<IMUSocketCAN> can, CanCbkId id,
+                            const CanCbkFunc &callback)
+        : can_(std::move(can)), id_(id) {
+        if (can_) token_ = can_->add_can_callback(callback, id_);
+    }
+
+    ~CanCallbackSubscription() { reset(); }
+
+    CanCallbackSubscription(const CanCallbackSubscription &) = delete;
+    CanCallbackSubscription &operator=(const CanCallbackSubscription &) = delete;
+
+    CanCallbackSubscription(CanCallbackSubscription &&other) noexcept
+        : can_(std::move(other.can_)), id_(other.id_), token_(other.token_) {
+        other.token_ = 0;
+    }
+
+    CanCallbackSubscription &operator=(CanCallbackSubscription &&other) noexcept {
+        if (this != &other) {
+            reset();
+            can_ = std::move(other.can_);
+            id_ = other.id_;
+            token_ = other.token_;
+            other.token_ = 0;
+        }
+        return *this;
+    }
+
+    void reset() {
+        if (can_ && token_ != 0) can_->remove_can_callback(id_, token_);
+        token_ = 0;
+        can_.reset();
+    }
+
+   private:
+    std::shared_ptr<IMUSocketCAN> can_;
+    CanCbkId id_{0};
+    CanCbkToken token_{0};
 };

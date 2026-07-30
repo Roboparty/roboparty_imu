@@ -41,4 +41,5 @@ class Mct7123CanDriver : public IMUDriver {
     std::shared_ptr<IMUSocketCAN> can_;
 
     imu_sensor_data_t sensor_data_;
+    std::array<CanCallbackSubscription, kFrameTypeCount> can_subscriptions_;
 };

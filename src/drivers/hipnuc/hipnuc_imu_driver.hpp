@@ -46,4 +46,5 @@ class HipnucIMUDriver : public IMUDriver {
     std::shared_ptr<IMUSerialPort> serial_;
     imu_sensor_data_t sensor_data_;
     hipnuc_raw_t raw_;
+    CanCallbackSubscription can_subscription_;
 };
