@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""IMU 测试工具 — 只需指定型号，自动探测接口。
+"""IMU 测试工具 — 必须指定型号和通信接口。
 
 Usage:
-  python3 scripts/test_imu.py MCT7123               # 自动探测
   python3 scripts/test_imu.py MCT7123 --can can0    # 指定 CAN 口
   python3 scripts/test_imu.py MCT7123 --slcan /dev/ttyACM1  # CANable2 CAN FD
   python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB0  # 指定串口
@@ -101,8 +100,8 @@ class MCT7123SlcanDriver:
 
 def main():
     ap = argparse.ArgumentParser(
-        description='IMU 测试工具 — MCT7123 / HIPNUC',
-        epilog='示例: python3 scripts/test_imu.py MCT7123',
+        description='IMU 测试工具 — MCT7123 / HIPNUC（必须指定通信接口）',
+        epilog='示例: python3 scripts/test_imu.py MCT7123 --can can0',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('type', nargs='?', default=None, metavar='TYPE',
                     help='IMU 型号 (MCT7123 / HIPNUC; 不提供则提示用法)')
@@ -136,11 +135,15 @@ def main():
 
     if args.type is None:
         print('请指定 IMU 型号: MCT7123 或 HIPNUC', file=sys.stderr)
-        print('示例: python3 scripts/test_imu.py MCT7123', file=sys.stderr)
+        print('示例: python3 scripts/test_imu.py MCT7123 --can can0', file=sys.stderr)
         sys.exit(1)
 
     if args.type not in ('MCT7123', 'HIPNUC'):
         print(f'无效型号: {args.type}, 可选: MCT7123, HIPNUC', file=sys.stderr)
+        sys.exit(1)
+
+    if not (args.serial or args.can or args.slcan):
+        print('请用 --serial、--can 或 --slcan 明确指定通信接口', file=sys.stderr)
         sys.exit(1)
 
     # Determine interface + device + baudrate
@@ -161,23 +164,16 @@ def main():
         device = args.serial
     elif args.can:
         device = args.can
-    else:
-        # Auto-detect: try serial first, fall back to default CAN
-        serials = scan_serial()
-        if serials:
-            device = serials[0]
-            iface_type = 'serial'
-        elif DEFAULTS[imu_type].get('can'):
-            device = DEFAULTS[imu_type]['can']
-            iface_type = 'canfd' if imu_type == 'MCT7123' else 'can'
-        else:
-            print('未找到串口设备，请用 --can 或 --serial 指定', file=sys.stderr)
-            sys.exit(1)
 
     imu_id = args.id if args.id is not None else DEFAULTS[imu_type]['id']
 
     forever = (args.duration <= 0)
-    rate_text = '500K/2M' if iface_type == 'slcanfd' else f'{baudrate}bps'
+    rate_text = {
+        'slcanfd': '500K/2M',
+        'canfd': 'CAN FD',
+        'can': 'CAN',
+        'serial': f'{baudrate}bps',
+    }[iface_type]
     print(f'[{args.type}] {iface_type}:{device} {rate_text} '
           f'{"∞" if forever else f"{args.duration}s"}', end=' ', flush=True)
     try:
