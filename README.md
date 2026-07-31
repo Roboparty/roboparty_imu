@@ -21,24 +21,24 @@ make -j$(nproc)
 
 ```bash
 # 只需指定型号，自动探测接口（串口优先，无串口则走默认 CAN）
-python3 test_imu.py MCT7123       # → can0, id=1
-python3 test_imu.py HIPNUC        # → can0, id=8
+python3 scripts/test_imu.py MCT7123       # → can0, id=1
+python3 scripts/test_imu.py HIPNUC        # → can0, id=8
 
 # 指定 CAN 口或 ID
-python3 test_imu.py HIPNUC --can can1
-python3 test_imu.py HIPNUC --id 9
+python3 scripts/test_imu.py HIPNUC --can can1
+python3 scripts/test_imu.py HIPNUC --id 9
 
 # 指定串口
-python3 test_imu.py MCT7123 --serial /dev/ttyUSB1
+python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB1
 
 # 列出可用设备
-python3 test_imu.py --list
+python3 scripts/test_imu.py --list
 
 # 全部数据
-python3 test_imu.py HIPNUC -a
+python3 scripts/test_imu.py HIPNUC -a
 
 # 安静模式
-python3 test_imu.py MCT7123 -d 5 -q
+python3 scripts/test_imu.py MCT7123 -d 5 -q
 ```
 
 输出示例 (默认仅欧拉角+温度):

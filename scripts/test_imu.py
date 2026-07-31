@@ -2,14 +2,16 @@
 """IMU 测试工具 — 只需指定型号，自动探测接口。
 
 Usage:
-  python3 test_imu.py MCT7123               # 自动探测
-  python3 test_imu.py MCT7123 --can can0    # 指定 CAN 口
-  python3 test_imu.py MCT7123 --serial /dev/ttyUSB0  # 指定串口
-  python3 test_imu.py --list                # 列出设备
+  python3 scripts/test_imu.py MCT7123               # 自动探测
+  python3 scripts/test_imu.py MCT7123 --can can0    # 指定 CAN 口
+  python3 scripts/test_imu.py MCT7123 --slcan /dev/ttyACM1  # CANable2 CAN FD
+  python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB0  # 指定串口
+  python3 scripts/test_imu.py --list                # 列出设备
 """
-import sys, os, time, argparse, glob
+import sys, os, time, argparse, glob, struct
 
 RAD2DEG = 57.29578
+DEG2RAD = 1.0 / RAD2DEG
 
 DEFAULTS = {
     'MCT7123': {'baudrate': 921600, 'id': 1, 'can': 'can0'},
@@ -24,15 +26,91 @@ def scan_serial():
             devs.append(p)
     return devs
 
+def scan_slcan():
+    """返回可能的 CANable/SLCAN 串口。"""
+    return [p for p in sorted(glob.glob('/dev/ttyACM*')) if os.path.exists(p)]
+
+def crc16_ccitt(data):
+    crc = 0xffff
+    for value in data:
+        crc ^= value << 8
+        for _ in range(8):
+            crc = ((crc << 1) ^ 0x1021) & 0xffff if crc & 0x8000 else (crc << 1) & 0xffff
+    return crc
+
+class MCT7123SlcanDriver:
+    """通过 CANable2 的 SLCAN-FD 协议读取 MCT7123。"""
+
+    def __init__(self, device):
+        try:
+            import can
+        except ImportError as exc:
+            raise RuntimeError('缺少 python-can，请先安装: pip install python-can') from exc
+
+        channel = device if '@' in device else f'{device}@115200'
+        self.bus = can.interface.Bus(
+            interface='slcan', channel=channel, bitrate=500000,
+            sleep_after_open=0.5)
+        self.bus.set_bitrate(500000, data_bitrate=2000000)
+        self.gyr = [0.0, 0.0, 0.0]
+        self.acc = [0.0, 0.0, 0.0]
+        self.mag = [0.0, 0.0, 0.0]
+        self.quat = [1.0, 0.0, 0.0, 0.0]
+        self.euler = [0.0, 0.0, 0.0]
+        self.temperature = 0.0
+        self.cycle = 0
+
+    def poll(self, timeout=0.05):
+        msg = self.bus.recv(timeout)
+        if msg is None or not msg.is_fd or len(msg.data) != 64:
+            return False
+        payload = bytes(msg.data)
+        if crc16_ccitt(payload[:62]) != struct.unpack_from('<H', payload, 62)[0]:
+            return False
+
+        can_id = msg.arbitration_id & 0x7ff
+        if can_id == 0x181:
+            values = struct.unpack_from('<10f', payload, 8)
+            self.gyr = [v * DEG2RAD for v in values[0:3]]
+            self.acc = list(values[3:6])
+            self.mag = list(values[6:9])
+            self.temperature = values[9]
+            self.cycle = payload[61]
+        elif can_id == 0x182:
+            roll, pitch, yaw, qx, qy, qz, qw, temp = struct.unpack_from('<8f', payload, 8)
+            self.euler = [roll, pitch, yaw]
+            self.quat = [qw, qx, qy, qz]
+            self.temperature = temp
+        else:
+            return False
+        return True
+
+    def shutdown(self):
+        try:
+            self.bus.shutdown()
+        except Exception:
+            pass
+
+    def get_ang_vel(self): return self.gyr
+    def get_lin_acc(self): return self.acc
+    def get_mag(self): return self.mag
+    def get_quat(self): return self.quat
+    def get_euler(self): return self.euler
+    def get_temperature(self): return self.temperature
+    def get_cycle(self): return self.cycle
+
 def main():
     ap = argparse.ArgumentParser(
         description='IMU 测试工具 — MCT7123 / HIPNUC',
-        epilog='示例: python3 test_imu.py MCT7123',
+        epilog='示例: python3 scripts/test_imu.py MCT7123',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('type', nargs='?', default=None, metavar='TYPE',
                     help='IMU 型号 (MCT7123 / HIPNUC; 不提供则提示用法)')
-    ap.add_argument('--serial', metavar='DEV', help='指定串口设备')
-    ap.add_argument('--can', metavar='IFACE', help='指定 CAN/CANFD 接口 (如 can0)')
+    interface = ap.add_mutually_exclusive_group()
+    interface.add_argument('--serial', metavar='DEV', help='指定 IMU 原生串口设备')
+    interface.add_argument('--can', metavar='IFACE', help='指定 SocketCAN 接口 (如 can0)')
+    interface.add_argument('--slcan', metavar='DEV',
+                           help='指定 CANable2 SLCAN-FD 串口 (如 /dev/ttyACM1)')
     ap.add_argument('--list', action='store_true', help='列出可用设备')
     ap.add_argument('-d', '--duration', type=float, default=0,
                     help='运行时长 秒 (0=无限循环)')
@@ -45,18 +123,20 @@ def main():
     ap.add_argument('-q', '--quiet', action='store_true',
                     help='安静模式, 只打印速率')
     ap.add_argument('-b', '--build-dir', default=None,
-                    help='build 目录 (默认 ./build)')
+                    help='build 目录 (默认仓库根目录下的 build/)')
     args = ap.parse_args()
 
     if args.list:
         serials = scan_serial()
+        slcans = scan_slcan()
         print('串口:', ', '.join(serials) if serials else '(无)')
+        print('SLCAN:', ', '.join(slcans) if slcans else '(无)')
         print('CAN:   (使用 --can can0 指定)')
         return
 
     if args.type is None:
         print('请指定 IMU 型号: MCT7123 或 HIPNUC', file=sys.stderr)
-        print('示例: python3 test_imu.py MCT7123', file=sys.stderr)
+        print('示例: python3 scripts/test_imu.py MCT7123', file=sys.stderr)
         sys.exit(1)
 
     if args.type not in ('MCT7123', 'HIPNUC'):
@@ -66,11 +146,18 @@ def main():
     # Determine interface + device + baudrate
     imu_type = args.type
     baudrate = DEFAULTS[imu_type]['baudrate']
-    iface_type = 'canfd' if (imu_type == 'MCT7123' and args.can) else \
+    iface_type = 'slcanfd' if args.slcan else \
+                 'canfd' if (imu_type == 'MCT7123' and args.can) else \
                  'can'   if (imu_type == 'HIPNUC'  and args.can) else \
                  'serial'
 
-    if args.serial:
+    if args.slcan:
+        if imu_type != 'MCT7123':
+            print('--slcan 当前只支持 MCT7123', file=sys.stderr)
+            sys.exit(1)
+        device = args.slcan
+        baudrate = 500000
+    elif args.serial:
         device = args.serial
     elif args.can:
         device = args.can
@@ -89,27 +176,25 @@ def main():
 
     imu_id = args.id if args.id is not None else DEFAULTS[imu_type]['id']
 
-    # Silence C++ spdlog noise
-    sys.stdout.flush()
-    os.dup2(os.open(os.devnull, os.O_WRONLY), 2)
-
-    sys.path.insert(0, args.build_dir or
-                    os.path.join(os.path.dirname(__file__) or '.', 'build'))
-    try:
-        import imu_py
-    except ImportError:
-        print('ERROR: imu_py not found. 请先编译', flush=True)
-        os._exit(1)
-
     forever = (args.duration <= 0)
-    print(f'[{args.type}] {iface_type}:{device} {baudrate}bps '
+    rate_text = '500K/2M' if iface_type == 'slcanfd' else f'{baudrate}bps'
+    print(f'[{args.type}] {iface_type}:{device} {rate_text} '
           f'{"∞" if forever else f"{args.duration}s"}', end=' ', flush=True)
     try:
-        imu = imu_py.IMUDriver.create_imu(imu_id, iface_type, device,
-                                          args.type, baudrate)
-    except RuntimeError as e:
+        if iface_type == 'slcanfd':
+            imu = MCT7123SlcanDriver(device)
+        else:
+            # Silence C++ spdlog noise
+            sys.stdout.flush()
+            os.dup2(os.open(os.devnull, os.O_WRONLY), 2)
+            repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            sys.path.insert(0, args.build_dir or os.path.join(repo_root, 'build'))
+            import imu_py
+            imu = imu_py.IMUDriver.create_imu(imu_id, iface_type, device,
+                                              args.type, baudrate)
+    except (ImportError, RuntimeError, OSError) as e:
         print(f'FAIL: {e}', flush=True)
-        os._exit(1)
+        sys.exit(1)
     time.sleep(0.3)
     print('OK\n')
 
@@ -138,6 +223,8 @@ def main():
 
     try:
         while forever or time.time() - start < args.duration:
+            if iface_type == 'slcanfd' and not imu.poll(0.05):
+                continue
             g = imu.get_ang_vel()
             a = imu.get_lin_acc()
             m = imu.get_mag()
@@ -162,6 +249,9 @@ def main():
             time.sleep(0.0005)
     except KeyboardInterrupt:
         pass
+    finally:
+        if iface_type == 'slcanfd':
+            imu.shutdown()
 
     elapsed = time.time() - start
     print(f'\n{args.type} {iface_type}  {elapsed:.1f}s  {cnt} reads  {cnt/elapsed:.0f} Hz  ', end='')
