@@ -3,7 +3,7 @@
 RoboParty 双足机器人 IMU 驱动库，提供 C++ 接口和 Python 绑定，支持
 MCT7123（MD7123）与 HiPNUC 系列设备。
 
-## 功能概览
+## 1. 功能概览
 
 | 设备 | 通信接口 | 数据帧 | 校验 |
 | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ MCT7123（MD7123）与 HiPNUC 系列设备。
 - 提供角速度、加速度、磁场、四元数、欧拉角、温度和帧计数器等数据。
 - 提供命令行测试工具，可明确选择串口、SocketCAN 或 CANable2。
 
-## 构建
+## 2. 构建
 
 ### 使用 ROS 2 和 colcon
 
@@ -94,9 +94,83 @@ cmake --build build -j"$(nproc)"
 独立构建完成后，Python 模块位于 `build/` 目录。测试脚本默认从该目录加载
 `imu_py`，也可以使用 `--build-dir` 指定其他构建目录。
 
-## 测试工具
+## 3. 测试工具
 
 测试脚本位于 `scripts/test_imu.py`。
+
+### 默认通信参数
+
+| 型号 | 原生串口 | CAN 仲裁速率 | CAN FD 数据速率 | 默认节点编号 |
+| --- | --- | --- | --- | --- |
+| MCT7123 | `921600 bit/s` | `500 kbit/s` | `2 Mbit/s` | `1` |
+| HiPNUC | `115200 bit/s` | `500 kbit/s` | 不适用 | `8` |
+
+SocketCAN 接口需要在运行测试脚本前配置并拉起，脚本不会自动修改系统网络接口。
+
+MCT7123：
+
+```bash
+# 500 kbit/s 仲裁段，2 Mbit/s 数据段，启用 CAN FD
+sudo ip link set can0 down
+sudo ip link set can0 type can bitrate 500000 dbitrate 2000000 fd on
+sudo ip link set can0 up
+```
+
+HiPNUC：
+
+```bash
+# 500 kbit/s 经典 CAN，不启用 CAN FD
+sudo ip link set can0 down
+sudo ip link set can0 type can bitrate 500000
+sudo ip link set can0 up
+```
+
+### 配置 HiPNUC 数据输出
+
+测试工具的默认界面显示欧拉角和温度。如果设备只启用了加速度、角速度和
+四元数 PGN，默认界面会全部显示为 `0`，但这不表示 CAN 通信或解析失败。
+使用 `--all` 可以查看当前已经启用的数据：
+
+```bash
+python3 scripts/test_imu.py HIPNUC --can can0 --id 8 --all
+```
+
+下面的命令以节点 ID `8` 为例，开启俯仰/横滚、航向角和温度输出：
+
+```bash
+# 0xFF3D：俯仰/横滚，周期 10 ms（100 Hz）
+cansend can0 0CEF0808#3D0106000A000000
+
+# 0xFF41：航向角，周期 10 ms（100 Hz）
+cansend can0 0CEF0808#410106000A000000
+
+# 0xFF43：温度，周期 100 ms（10 Hz）
+cansend can0 0CEF0808#4301060064000000
+
+# 保存全部参数到 Flash
+cansend can0 0CEF0808#0000060000000000
+
+# 复位设备，使配置生效
+cansend can0 0CEF0808#00000600FF000000
+```
+
+以上命令需要安装 `can-utils`：
+
+```bash
+sudo apt install can-utils
+```
+
+配置成功后，总线上应出现以下 J1939 报文：
+
+| CAN ID | PGN | 数据 | 周期 |
+| --- | --- | --- | --- |
+| `0x0CFF3D08` | `0xFF3D` | 俯仰角、横滚角 | 10 ms |
+| `0x0CFF4108` | `0xFF41` | 航向角 | 10 ms |
+| `0x0CFF4308` | `0xFF43` | 温度 | 100 ms |
+
+配置帧 `0x0CEF0808` 中，目标地址和源地址均为 `8`。设备使用其他节点编号时，
+需要相应修改配置帧 CAN ID。航向角显示 `360°` 与 `0°` 表示同一方向，属于
+正常的角度回绕。
 
 ### 指定通信接口
 
@@ -104,11 +178,11 @@ cmake --build build -j"$(nproc)"
 
 ```bash
 # 原生串口
-python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB1
+python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB0
 
 # SocketCAN
 python3 scripts/test_imu.py MCT7123 --can can0
-python3 scripts/test_imu.py HIPNUC --can can1 --id 9
+python3 scripts/test_imu.py HIPNUC --can can0 --id 8
 
 # CANable2 SLCAN-FD（目前仅支持 MCT7123）
 python3 scripts/test_imu.py MCT7123 --slcan /dev/ttyACM1
@@ -166,7 +240,7 @@ python3 scripts/test_imu.py MCT7123 -i 0.2
 | `-q, --quiet` | 仅输出读取速率 |
 | `-b, --build-dir DIR` | 指定包含 `imu_py` 的构建目录 |
 
-## Python API
+## 4. Python API
 
 通过 `IMUDriver.create_imu()` 创建驱动：
 
@@ -203,7 +277,7 @@ cycle = imu.get_cycle()
 
 可通过 `help(imu_py.IMUDriver)` 查看 Python 行内文档。
 
-## C++ API
+## 5. C++ API
 
 ```cpp
 #include "imu_driver.hpp"
@@ -221,7 +295,7 @@ float temperature = imu->get_temperature();
 uint8_t cycle = imu->get_cycle();
 ```
 
-## CAN 与 CAN FD
+## 6. CAN 与 CAN FD
 
 同一条 CAN 总线可以同时挂载 HiPNUC 经典 CAN 设备和 MCT7123 CAN FD 设备。
 驱动按照帧类型和长度分别路由数据。
@@ -246,7 +320,7 @@ MCT7123 使用以下 CAN 标识：
 
 C++ 端可通过 `IMUSocketCAN::get_instance("can0")->send(frame)` 发送 CAN 帧。
 
-## MCT7123 坐标系
+## 7. MCT7123 坐标系
 
 MCT7123 默认使用坐标系 9：
 
