@@ -2,10 +2,10 @@
 """IMU 测试工具 — 必须指定型号和通信接口。
 
 Usage:
-  python3 scripts/test_imu.py MCT7123 --can can0    # 指定 CAN 口
-  python3 scripts/test_imu.py MCT7123 --slcan /dev/ttyACM1  # CANable2 CAN FD
-  python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB0  # 指定串口
-  python3 scripts/test_imu.py --list                # 列出设备
+  python3 scripts/test_imu.py MCT7123 --can can1 -d 5
+  python3 scripts/test_imu.py MCT7123 --slcan /dev/ttyACM0 -d 5
+  python3 scripts/test_imu.py MCT7123 --serial /dev/ttyUSB0 -d 5
+  python3 scripts/test_imu.py --list
 """
 import sys, os, time, argparse, glob, struct
 
@@ -28,6 +28,18 @@ def scan_serial():
 def scan_slcan():
     """返回可能的 CANable/SLCAN 串口。"""
     return [p for p in sorted(glob.glob('/dev/ttyACM*')) if os.path.exists(p)]
+
+def scan_can():
+    """返回系统中已经注册的 SocketCAN 网络接口。"""
+    interfaces = []
+    for type_path in sorted(glob.glob('/sys/class/net/*/type')):
+        try:
+            with open(type_path, encoding='ascii') as type_file:
+                if type_file.read().strip() == '280':  # Linux ARPHRD_CAN
+                    interfaces.append(type_path.split('/')[-2])
+        except OSError:
+            continue
+    return interfaces
 
 def crc16_ccitt(data):
     crc = 0xffff
@@ -101,7 +113,7 @@ class MCT7123SlcanDriver:
 def main():
     ap = argparse.ArgumentParser(
         description='IMU 测试工具 — MCT7123 / HIPNUC（必须指定通信接口）',
-        epilog='示例: python3 scripts/test_imu.py MCT7123 --can can0',
+        epilog='示例: python3 scripts/test_imu.py MCT7123 --can can1 -d 5',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('type', nargs='?', default=None, metavar='TYPE',
                     help='IMU 型号 (MCT7123 / HIPNUC; 不提供则提示用法)')
@@ -109,7 +121,7 @@ def main():
     interface.add_argument('--serial', metavar='DEV', help='指定 IMU 原生串口设备')
     interface.add_argument('--can', metavar='IFACE', help='指定 SocketCAN 接口 (如 can0)')
     interface.add_argument('--slcan', metavar='DEV',
-                           help='指定 CANable2 SLCAN-FD 串口 (如 /dev/ttyACM1)')
+                           help='指定 CANable2 SLCAN-FD 串口 (如 /dev/ttyACM0)')
     ap.add_argument('--list', action='store_true', help='列出可用设备')
     ap.add_argument('-d', '--duration', type=float, default=0,
                     help='运行时长 秒 (0=无限循环)')
@@ -128,14 +140,15 @@ def main():
     if args.list:
         serials = scan_serial()
         slcans = scan_slcan()
+        cans = scan_can()
         print('串口:', ', '.join(serials) if serials else '(无)')
         print('SLCAN:', ', '.join(slcans) if slcans else '(无)')
-        print('CAN:   (使用 --can can0 指定)')
+        print('CAN:  ', ', '.join(cans) if cans else '(无)')
         return
 
     if args.type is None:
         print('请指定 IMU 型号: MCT7123 或 HIPNUC', file=sys.stderr)
-        print('示例: python3 scripts/test_imu.py MCT7123 --can can0', file=sys.stderr)
+        print('示例: python3 scripts/test_imu.py MCT7123 --can can1 -d 5', file=sys.stderr)
         sys.exit(1)
 
     if args.type not in ('MCT7123', 'HIPNUC'):

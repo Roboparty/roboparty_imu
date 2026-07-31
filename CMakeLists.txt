@@ -79,7 +79,9 @@ install(FILES
   DESTINATION lib/cmake/roboparty_imu
 )
 
-pybind11_add_module(imu_py src/pybind_module.cpp)
+# Release 构建已经统一使用 -O3。禁用 pybind11 自动附加的 LTO，避免在
+# 内存较小的 ARM 设备上串行执行 LTRANS，并保持 colcon/CMake 输出无警告。
+pybind11_add_module(imu_py NO_EXTRAS src/pybind_module.cpp)
 target_include_directories(imu_py
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
