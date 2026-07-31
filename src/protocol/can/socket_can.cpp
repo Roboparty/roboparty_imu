@@ -111,6 +111,15 @@ void IMUSocketCAN::open(std::string interface) {
                         if (it != can_callback_list_.end()) {
                             callbacks_to_run = it->second;
                         }
+                        auto wildcard_it =
+                            can_callback_list_.find(CAN_CALLBACK_WILDCARD);
+                        if (wildcard_it != can_callback_list_.end() &&
+                            key != CAN_CALLBACK_WILDCARD) {
+                            callbacks_to_run.insert(
+                                callbacks_to_run.end(),
+                                wildcard_it->second.begin(),
+                                wildcard_it->second.end());
+                        }
                     }
                     for (const auto &entry : callbacks_to_run) {
                         {

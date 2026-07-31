@@ -40,6 +40,7 @@ constexpr const int TIMEOUT_USEC = 1000;
 using CanCbkFunc = std::function<void(const canfd_frame &)>;
 using CanCbkId = uint16_t;
 using CanCbkToken = uint64_t;
+constexpr CanCbkId CAN_CALLBACK_WILDCARD = UINT16_MAX;
 struct CanCbkEntry {
     CanCbkToken token;
     CanCbkFunc callback;

@@ -13,10 +13,8 @@ HipnucIMUDriver::HipnucIMUDriver(uint16_t imu_id, const std::string& interface_t
     } else if (interface_type_ == "can") {
         can_ = IMUSocketCAN::get_instance(interface_);
         CanCbkFunc can_callback = std::bind(&HipnucIMUDriver::can_rx_cbk, this, std::placeholders::_1);
-        can_->set_key_extractor([](const canfd_frame &frame) -> CanCbkId {
-            return frame.can_id & 0x7F;
-        });
-        can_subscription_ = CanCallbackSubscription(can_, imu_id_, can_callback);
+        can_subscription_ =
+            CanCallbackSubscription(can_, CAN_CALLBACK_WILDCARD, can_callback);
     } else {
         throw std::runtime_error("Hipnuc driver only support CAN and SERIAL interface");
     }
@@ -31,7 +29,11 @@ HipnucIMUDriver::~HipnucIMUDriver() {
 void HipnucIMUDriver::can_rx_cbk(const canfd_frame& rx_frame) {
     /* Only process classic CAN frames (len <= 8).
      * CANFD frames on the same bus are handled by other drivers (e.g. MCT7123). */
-    if (rx_frame.len > 8) return;
+    if (rx_frame.len > 8 ||
+        !(rx_frame.can_id & HIPNUC_CAN_EFF_FLAG) ||
+        hipnuc_can_extract_node_id(rx_frame.can_id) != imu_id_) {
+        return;
+    }
 
     hipnuc_can_frame_t frame;
     frame.can_id = rx_frame.can_id;
