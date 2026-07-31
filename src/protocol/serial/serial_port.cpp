@@ -75,7 +75,7 @@ void IMUSerialPort::init() {
     running_ = true;
     rx_thread_ = std::thread([this]() {
         pthread_setname_np(pthread_self(), "serial_rx");
-        struct sched_param sp{}; sp.sched_priority = 80;
+        struct sched_param sp{}; sp.sched_priority = 48;
         if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
             if (logger_) logger_->error("Failed to set realtime priority for IMU serial RX");
         } 
@@ -148,4 +148,3 @@ void IMUSerialPort::close() {
 void IMUSerialPort::set_serial_callback(SerialCbkFunc callback) {
     callback_ = callback;
 }
-

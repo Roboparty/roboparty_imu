@@ -60,7 +60,7 @@ void IMUSocketCAN::open(std::string interface) {
     receiving_ = true;
     receiver_thread_ = std::thread([this]() {
         pthread_setname_np(pthread_self(), "can_rx");
-        struct sched_param sp{}; sp.sched_priority = 80;
+        struct sched_param sp{}; sp.sched_priority = 48;
         if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
             logger_->error("Failed to set realtime priority for IMU CAN RX thread");
         }
