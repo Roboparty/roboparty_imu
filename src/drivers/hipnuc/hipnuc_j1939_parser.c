@@ -14,7 +14,7 @@
 #define J1939_PGN_QUAT       0xFF46
 #define J1939_PGN_INCLINE    0xFF4A
 
-static int parse_j1939_time(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_time(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     const uint8_t *raw = frame->data;
     data->utc_year = raw[0];
@@ -28,7 +28,7 @@ static int parse_j1939_time(const hipnuc_can_frame_t *frame, can_sensor_data_t *
     return CAN_MSG_TIME;
 }
 
-static int parse_j1939_accel(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_accel(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw = (int16_t*)frame->data;
     data->acc_x = raw[0] * 0.00048828f;
@@ -37,7 +37,7 @@ static int parse_j1939_accel(const hipnuc_can_frame_t *frame, can_sensor_data_t 
     return CAN_MSG_ACCEL;
 }
 
-static int parse_j1939_gyro(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_gyro(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw = (int16_t*)frame->data;
     data->gyr_x = raw[0] * 0.061035f;
@@ -46,7 +46,7 @@ static int parse_j1939_gyro(const hipnuc_can_frame_t *frame, can_sensor_data_t *
     return CAN_MSG_GYRO;
 }
 
-static int parse_j1939_mag(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_mag(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw = (int16_t*)frame->data;
     data->mag_x = raw[0] * 0.030517f;
@@ -55,7 +55,7 @@ static int parse_j1939_mag(const hipnuc_can_frame_t *frame, can_sensor_data_t *d
     return CAN_MSG_MAG;
 }
 
-static int parse_j1939_pitch_roll(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_pitch_roll(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int32_t *raw = (int32_t*)frame->data;
     data->roll = raw[0] * 0.001f;
@@ -63,14 +63,14 @@ static int parse_j1939_pitch_roll(const hipnuc_can_frame_t *frame, can_sensor_da
     return CAN_MSG_PITCH_ROLL;
 }
 
-static int parse_j1939_yaw(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_yaw(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int32_t *raw = (int32_t*)frame->data;
     data->imu_yaw = raw[0] * 0.001f;
     return CAN_MSG_YAW;
 }
 
-static int parse_j1939_quat(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_quat(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw = (int16_t*)frame->data;
     data->quat_w = raw[0] * 0.0001f;
@@ -80,7 +80,7 @@ static int parse_j1939_quat(const hipnuc_can_frame_t *frame, can_sensor_data_t *
     return CAN_MSG_QUAT;
 }
 
-static int parse_j1939_inclination(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_inclination(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int32_t *raw = (int32_t*)frame->data;
     data->incli_x = raw[0] * 0.001f;
@@ -88,7 +88,7 @@ static int parse_j1939_inclination(const hipnuc_can_frame_t *frame, can_sensor_d
     return CAN_MSG_INCLI;
 }
 
-static int parse_j1939_env(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_env(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw16 = (int16_t*)frame->data;
     int32_t *raw32 = (int32_t*)(frame->data + 4);
@@ -97,7 +97,7 @@ static int parse_j1939_env(const hipnuc_can_frame_t *frame, can_sensor_data_t *d
     return CAN_MSG_PRESSURE;
 }
 
-static int parse_j1939_lonlat(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_lonlat(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int32_t *raw = (int32_t*)frame->data;
     data->ins_lat = raw[0] * 1e-7;
@@ -105,7 +105,7 @@ static int parse_j1939_lonlat(const hipnuc_can_frame_t *frame, can_sensor_data_t
     return CAN_MSG_GNSS_POS;
 }
 
-static int parse_j1939_alt(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_alt(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int32_t *raw32 = (int32_t*)frame->data;
     int16_t *raw16 = (int16_t*)frame->data;
@@ -115,7 +115,7 @@ static int parse_j1939_alt(const hipnuc_can_frame_t *frame, can_sensor_data_t *d
     return CAN_MSG_GNSS_POS;
 }
 
-static int parse_j1939_status(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_status(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     const uint8_t *raw = frame->data;
     data->solq_pos = raw[0];
@@ -126,7 +126,7 @@ static int parse_j1939_status(const hipnuc_can_frame_t *frame, can_sensor_data_t
     return CAN_MSG_GNSS_STATUS;
 }
 
-static int parse_j1939_vel(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+static int parse_j1939_vel(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     int16_t *raw = (int16_t*)frame->data;
     data->ins_vel_e = raw[0] * 0.01f;
@@ -136,7 +136,7 @@ static int parse_j1939_vel(const hipnuc_can_frame_t *frame, can_sensor_data_t *d
     return CAN_MSG_GNSS_VEL;
 }
 
-int hipnuc_j1939_parse_frame(const hipnuc_can_frame_t *frame, can_sensor_data_t *data)
+int hipnuc_j1939_parse_frame(const hipnuc_can_frame_t *frame, imu_sensor_data_t *data)
 {
     if (!frame || !data) return CAN_MSG_ERROR;
     if (!(frame->can_id & HIPNUC_CAN_EFF_FLAG)) return CAN_MSG_UNKNOWN;

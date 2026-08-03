@@ -35,7 +35,7 @@ void HipnucIMUDriver::can_rx_cbk(const can_frame& rx_frame) {
     frame.can_id = rx_frame.can_id;
     frame.can_dlc = rx_frame.can_dlc;
     memcpy(frame.data, rx_frame.data, 8);
-    
+
     std::unique_lock<std::shared_mutex> lock(imu_mutex_);
     
     int ret = hipnuc_j1939_parse_frame(&frame, &sensor_data_);
@@ -70,6 +70,17 @@ void HipnucIMUDriver::serial_rx_cbk(const uint8_t* data, size_t length) {
             sensor_data_.acc_x = raw_.hi91.acc[0] * GRA_ACC;
             sensor_data_.acc_y = raw_.hi91.acc[1] * GRA_ACC;
             sensor_data_.acc_z = raw_.hi91.acc[2] * GRA_ACC;
+
+            sensor_data_.roll  = raw_.hi91.roll;
+            sensor_data_.pitch = raw_.hi91.pitch;
+            sensor_data_.imu_yaw = raw_.hi91.yaw;
+
+            sensor_data_.mag_x = raw_.hi91.mag[0];
+            sensor_data_.mag_y = raw_.hi91.mag[1];
+            sensor_data_.mag_z = raw_.hi91.mag[2];
+
+            sensor_data_.temperature = raw_.hi91.temp;
+            sensor_data_.timestamp_ms = raw_.hi91.system_time;
         }
     }
 }
@@ -92,4 +103,23 @@ std::vector<float> HipnucIMUDriver::get_lin_acc() {
 float HipnucIMUDriver::get_temperature() {
     std::shared_lock<std::shared_mutex> lock(imu_mutex_);
     return sensor_data_.temperature;
+}
+
+std::vector<float> HipnucIMUDriver::get_euler() {
+    std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+    return {sensor_data_.roll, sensor_data_.pitch, sensor_data_.imu_yaw};
+}
+
+std::vector<float> HipnucIMUDriver::get_mag() {
+    std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+    return {sensor_data_.mag_x, sensor_data_.mag_y, sensor_data_.mag_z};
+}
+
+uint64_t HipnucIMUDriver::get_timestamp() {
+    std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+    return (uint64_t)sensor_data_.timestamp_ms * 1000ULL;
+}
+
+uint8_t HipnucIMUDriver::get_cycle() {
+    return 0;  /* HiPNUC protocol has no cycle counter */
 }
