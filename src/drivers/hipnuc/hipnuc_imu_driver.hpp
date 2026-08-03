@@ -26,7 +26,7 @@ class HipnucIMUDriver : public IMUDriver {
     HipnucIMUDriver(uint16_t imu_id, const std::string& interface_type, const std::string& interface, const int baudrate=0);
     ~HipnucIMUDriver();
 
-    void can_rx_cbk(const can_frame& rx_frame);
+    void can_rx_cbk(const canfd_frame& rx_frame);
     void serial_rx_cbk(const uint8_t* data, size_t length);
     std::vector<float> get_ang_vel() override;
     std::vector<float> get_quat() override;
@@ -46,4 +46,5 @@ class HipnucIMUDriver : public IMUDriver {
     std::shared_ptr<IMUSerialPort> serial_;
     imu_sensor_data_t sensor_data_;
     hipnuc_raw_t raw_;
+    CanCallbackSubscription can_subscription_;
 };
