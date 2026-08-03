@@ -40,11 +40,11 @@ target_include_directories(imu
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu imu_protocol)
+target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu mct7123_imu imu_protocol)
 
 install(DIRECTORY include/ DESTINATION include)
 
-install(TARGETS imu hipnuc_imu imu_protocol
+install(TARGETS imu hipnuc_imu mct7123_imu imu_protocol
   EXPORT roboparty_imu-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -97,7 +97,7 @@ install(TARGETS imu_py
 )
 
 if(ament_cmake_FOUND)
-  ament_export_libraries(imu hipnuc_imu imu_protocol)
+  ament_export_libraries(imu hipnuc_imu mct7123_imu imu_protocol)
   ament_export_include_directories(include)
   ament_package()
 endif()

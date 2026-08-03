@@ -7,6 +7,7 @@ add_library(imu_protocol
 target_include_directories(imu_protocol
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/can>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/canfd>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/serial>
   $<INSTALL_INTERFACE:include>
 )
