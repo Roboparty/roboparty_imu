@@ -40,11 +40,11 @@ target_include_directories(imu
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu imu_protocol)
+target_link_libraries(imu PUBLIC ${PUBLIC_DEPENDENCIES} hipnuc_imu mct7123_imu imu_protocol)
 
 install(DIRECTORY include/ DESTINATION include)
 
-install(TARGETS imu hipnuc_imu imu_protocol
+install(TARGETS imu hipnuc_imu mct7123_imu imu_protocol
   EXPORT roboparty_imu-targets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -79,7 +79,9 @@ install(FILES
   DESTINATION lib/cmake/roboparty_imu
 )
 
-pybind11_add_module(imu_py src/pybind_module.cpp)
+# Release 构建已经统一使用 -O3。禁用 pybind11 自动附加的 LTO，避免在
+# 内存较小的 ARM 设备上串行执行 LTRANS，并保持 colcon/CMake 输出无警告。
+pybind11_add_module(imu_py NO_EXTRAS src/pybind_module.cpp)
 target_include_directories(imu_py
   PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -97,7 +99,7 @@ install(TARGETS imu_py
 )
 
 if(ament_cmake_FOUND)
-  ament_export_libraries(imu hipnuc_imu imu_protocol)
+  ament_export_libraries(imu hipnuc_imu mct7123_imu imu_protocol)
   ament_export_include_directories(include)
   ament_package()
 endif()

@@ -77,7 +77,7 @@ void IMUSerialPort::init() {
         pthread_setname_np(pthread_self(), "serial_rx");
         struct sched_param sp{}; sp.sched_priority = 80;
         if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
-            if (logger_) logger_->error("Failed to set realtime priority for IMU serial RX");
+            if (logger_) logger_->warn("Failed to set realtime priority for IMU serial RX");
         } 
         uint8_t buf[BUF_SIZE] = {0};
         
