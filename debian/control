@@ -9,6 +9,6 @@ Package: roboparty-imu
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, roboparty-base (>= 1.0.0)
 Description: RoboParty IMU driver
- IMU driver with HIPNUC support (CAN and serial protocols).
+ IMU driver with HiPNUC serial and classic CAN support, and MCT7123
+ serial and CAN FD support.
  Provides static libraries, headers and Python bindings.
- Installs udev rules for IMU serial devices.
