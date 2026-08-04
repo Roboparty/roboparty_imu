@@ -10,6 +10,8 @@
 
 #include <linux/can.h>
 
+#include <spdlog/spdlog.h>
+
 #include <atomic>
 #include <functional>
 #include <memory>
@@ -29,6 +31,11 @@ class IMUSocketCANFD {
   IMUSocketCANFD(const IMUSocketCANFD&) = delete;
   IMUSocketCANFD& operator=(const IMUSocketCANFD&) = delete;
   ~IMUSocketCANFD();
+
+  /** @brief Use a caller-provided logger for transport diagnostics. */
+  static void init_logger(std::shared_ptr<spdlog::logger> logger) {
+    logger_ = logger;
+  }
 
   /**
    * @brief Open a CAN-FD interface and start asynchronous reception.
@@ -57,4 +64,6 @@ class IMUSocketCANFD {
   int socket_fd_{-1};
   std::atomic<bool> receiving_{false};
   std::thread receiver_thread_;
+
+  static std::shared_ptr<spdlog::logger> logger_;
 };
