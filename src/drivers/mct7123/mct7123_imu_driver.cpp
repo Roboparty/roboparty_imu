@@ -9,6 +9,10 @@
 
 namespace {
 constexpr float kDegreesToRadians = 0.01745329F;
+
+// MCT7123 reports data in FRD (x forward, y right, z down).  Expose it in
+// FLU (x forward, y left, z up), which is a 180-degree basis rotation about x.
+constexpr float frd_to_flu_yz(float value) { return -value; }
 }
 
 Mct7123IMUDriver::Mct7123IMUDriver(uint16_t imu_id,
@@ -106,11 +110,11 @@ void Mct7123IMUDriver::parse_payload(uint8_t message_id,
                       &fusion_status, &timestamp_us, &cycle);
     sensor_data_.quat_w = quat_w;
     sensor_data_.quat_x = quat_x;
-    sensor_data_.quat_y = quat_y;
-    sensor_data_.quat_z = quat_z;
+    sensor_data_.quat_y = frd_to_flu_yz(quat_y);
+    sensor_data_.quat_z = frd_to_flu_yz(quat_z);
     sensor_data_.roll = roll;
-    sensor_data_.pitch = pitch;
-    sensor_data_.yaw = yaw;
+    sensor_data_.pitch = frd_to_flu_yz(pitch);
+    sensor_data_.yaw = frd_to_flu_yz(yaw);
     sensor_data_.temperature = temperature;
     sensor_data_.timestamp_us = timestamp_us;
     sensor_data_.cycle = cycle;
