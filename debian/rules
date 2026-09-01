@@ -14,6 +14,9 @@ override_dh_install:
 	dh_install
 	install -d debian/roboparty-imu/opt/roboparty/bin
 	install -m 755 init_imu.sh debian/roboparty-imu/opt/roboparty/bin/
+	install -m 755 scripts/imu_ota.py debian/roboparty-imu/opt/roboparty/bin/
+	install -d debian/roboparty-imu/opt/roboparty/lib/firmware
+	install -m 644 firmware/*.bin debian/roboparty-imu/opt/roboparty/lib/firmware/
 	if [ -d etc/udev/rules.d ]; then \
 		install -d debian/roboparty-imu/etc/udev/rules.d; \
 		cp etc/udev/rules.d/*.rules debian/roboparty-imu/etc/udev/rules.d/ 2>/dev/null || true; \

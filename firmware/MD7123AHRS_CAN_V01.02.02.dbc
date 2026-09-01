@@ -1,0 +1,377 @@
+VERSION "01.02.02"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Host AHRS_MD7123
+
+BO_ 385 AHRS_IMU_Data: 64 AHRS_MD7123
+ SG_ systimer : 0|64@1+ (1,0) [0|18446744073709551615] "ms" Host
+ SG_ Gyro_X : 64|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Gyro_Y : 96|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Gyro_Z : 128|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Acc_X : 160|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Acc_Y : 192|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Acc_Z : 224|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Mag_X : 256|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Mag_Y : 288|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Mag_Z : 320|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Temp : 352|32@1- (1,0) [-40|85] "degC" Host
+ SG_ RS_SystemState : 384|2@1+ (1,0) [0|3] "" Host
+ SG_ RS_GyroFault : 386|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_X : 387|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Y : 388|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Z : 389|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_X : 390|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Y : 391|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Z : 392|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_X : 393|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Y : 394|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Z : 395|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_X : 396|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Y : 397|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Z : 398|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroTempWarning : 399|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelFault : 400|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_X : 401|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Y : 402|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Z : 403|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_X : 404|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Y : 405|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Z : 406|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_X : 407|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Y : 408|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Z : 409|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_X : 410|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Y : 411|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Z : 412|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelTempWarning : 413|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagFault : 414|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_X : 415|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Y : 416|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Z : 417|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_X : 418|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Y : 419|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Z : 420|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_X : 421|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Y : 422|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Z : 423|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_X : 424|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Y : 425|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Z : 426|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagTempWarning : 427|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_Reserved : 428|4@1+ (1,0) [0|15] "" Host
+ SG_ Rev_IMU : 432|56@1+ (1,0) [0|72057594037927935] "" Host
+ SG_ Cycle : 488|8@1+ (1,0) [0|255] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 386 AHRS_Att_Data: 64 AHRS_MD7123
+ SG_ systimer : 0|64@1+ (1,0) [0|18446744073709551615] "ms" Host
+ SG_ Attitude_X : 64|32@1- (1,0) [-180|180] "deg" Host
+ SG_ Attitude_Y : 96|32@1- (1,0) [-90|90] "deg" Host
+ SG_ Attitude_Z : 128|32@1- (1,0) [-180|180] "deg" Host
+ SG_ Quat_X : 160|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_Y : 192|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_Z : 224|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_W : 256|32@1- (1,0) [-1|1] "" Host
+ SG_ Temp : 288|32@1- (1,0) [-40|85] "degC" Host
+ SG_ FS_AttitudeQuality : 320|2@1+ (1,0) [0|3] "" Host
+ SG_ FS_GyroBiasAbnormal : 322|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_AccelInvalid : 323|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_MagInvalid : 324|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_MagDisturbance : 325|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_AccelDisturbance : 326|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_InitStateSummary_UNCONFIRMED : 327|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_FilterDiverged : 328|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_SelfTestOrSensorFault : 329|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_Bit10_UndocumentedGap : 330|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_DisturbanceCompensated : 331|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_HeadingAccuracyGood : 332|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_Reserved : 333|19@1+ (1,0) [0|524287] "" Host
+ SG_ RS_SystemState : 352|2@1+ (1,0) [0|3] "" Host
+ SG_ RS_GyroFault : 354|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_X : 355|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Y : 356|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Z : 357|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_X : 358|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Y : 359|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Z : 360|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_X : 361|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Y : 362|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Z : 363|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_X : 364|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Y : 365|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Z : 366|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroTempWarning : 367|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelFault : 368|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_X : 369|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Y : 370|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Z : 371|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_X : 372|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Y : 373|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Z : 374|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_X : 375|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Y : 376|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Z : 377|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_X : 378|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Y : 379|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Z : 380|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelTempWarning : 381|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagFault : 382|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_X : 383|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Y : 384|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Z : 385|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_X : 386|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Y : 387|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Z : 388|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_X : 389|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Y : 390|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Z : 391|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_X : 392|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Y : 393|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Z : 394|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagTempWarning : 395|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_Reserved : 396|4@1+ (1,0) [0|15] "" Host
+ SG_ Rev_Att_0 : 400|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Att_1 : 464|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Cycle : 488|8@1+ (1,0) [0|255] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 387 AHRS_Config_Data: 64 AHRS_MD7123
+ SG_ sentence_ctrl : 0|8@1+ (1,0) [0|2] "" Host
+ SG_ output_rate : 8|8@1+ (1,0) [0|3] "" Host
+ SG_ Orientation_Index : 16|8@1+ (1,0) [0|23] "" Host
+ SG_ fusion_mode : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ latitude : 32|64@1- (1,0) [-90|90] "deg" Host
+ SG_ longitude : 96|64@1- (1,0) [-180|180] "deg" Host
+ SG_ height : 160|32@1- (1,0) [-1000|400000] "m" Host
+ SG_ output_interface : 192|8@1+ (1,0) [0|2] "" Host
+ SG_ IMU_Enable_Mask : 200|8@1+ (1,0) [1|15] "" Host
+ SG_ CAN_ID_Config : 208|16@1+ (1,0) [0|2047] "" Host
+ SG_ Device_alias : 224|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ UART_Baud_rate_Config : 288|8@1+ (1,0) [0|2] "" Host
+ SG_ CAN_Baud_rate_Config_RESERVED : 296|8@1+ (1,0) [0|255] "" Host
+ SG_ SPI_mode : 304|8@1+ (1,0) [0|3] "" Host
+ SG_ Rev_Cfg_0 : 312|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Cfg_1 : 376|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Cfg_2 : 440|56@1+ (1,0) [0|72057594037927935] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 1988 AHRS_UCB_Cmd_Req: 64 Host
+ SG_ SyncMsb : 0|8@1+ (1,0) [189|189] "" AHRS_MD7123
+ SG_ SyncLsb : 8|8@1+ (1,0) [100|100] "" AHRS_MD7123
+ SG_ function_code M : 16|8@1+ (1,0) [0|255] "" AHRS_MD7123
+ SG_ Req_AppSize_u32 m8 : 24|32@1+ (1,0) [0|4294967295] "byte" AHRS_MD7123
+ SG_ Req_CRC32_A m8 : 56|32@1+ (1,0) [0|4294967295] "" AHRS_MD7123
+ SG_ Req_CRC32_B m8 : 88|32@1+ (1,0) [0|4294967295] "" AHRS_MD7123
+ SG_ Req_WriteAddr24_BE m33 : 31|24@0+ (1,0) [0|16777215] "" AHRS_MD7123
+ SG_ Req_WriteData_0 m33 : 48|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_1 m33 : 112|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_2 m33 : 176|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_3 m33 : 240|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_4 m33 : 304|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_5 m33 : 368|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_6 m33 : 432|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_SamplingEnable m64 : 24|8@1+ (1,0) [0|1] "" AHRS_MD7123
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" AHRS_MD7123
+
+BO_ 1996 AHRS_UCB_Cmd_Rsp: 64 AHRS_MD7123
+ SG_ SyncMsb : 0|8@1+ (1,0) [189|189] "" Host
+ SG_ SyncLsb : 8|8@1+ (1,0) [100|100] "" Host
+ SG_ function_code M : 16|8@1+ (1,0) [0|255] "" Host
+ SG_ Rsp_BootloaderVer_0 m6 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_1 m6 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_2 m6 : 152|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_3 m6 : 216|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_4 m6 : 280|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_5 m6 : 344|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_6 m6 : 408|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_7 m6 : 472|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Rsp_AppVer_0 m7 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_1 m7 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_2 m7 : 152|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_3 m7 : 216|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_4 m7 : 280|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_5 m7 : 344|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_6 m7 : 408|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_7 m7 : 472|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Rsp_BankString m8 : 24|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_McuSN_u64 m9 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_PcbaSN_0 m9 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_PcbaSN_1 m9 : 152|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_ProductSN_0 m9 : 168|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_ProductSN_1 m9 : 232|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_HwSN m9 : 248|40@1+ (1,0) [0|1099511627775] "" Host
+ SG_ Rsp_JumpAppStatusString m32 : 24|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_WriteResult m33 : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ Rsp_JumpBootloaderCondition m48 : 24|8@1+ (1,0) [0|255] "" Host
+ SG_ Rsp_CurrentSamplingState m64 : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+
+
+BO_TX_BU_ 387 : AHRS_MD7123,Host;
+
+CM_ "MD7123AHRS CAN 协议 DBC，对应 CAN Matrix V01.02.02。数据来源：MD7123AHRS_CAN_Matrix_V01.02.02_with_UCB.xlsx + App/Service/Com/Common/imu_output_common.h/.c + App/ref_docs/MD7123_CAN_Interactive_Commands.md + App/Service/Com/Com_Cfg.c。默认 CAN_ID_Config(Base ID)=0x180。DBC 修订记录：rev1(2026-08-13) 首版；rev2(2026-08-13) 修规范兼容性——拆分所有超 64bit 信号(DBC 规范单信号上限 64bit)、消除 Rev 同名不同长度冲突、合并 BA_DEF_ 定义段、补 0x22/0x23 命令码、修正 min/max 越界告警、增加 BO_TX_BU_ 声明 0x183 双向发送。文件编码 GBK(ANSI) + CRLF，rev3(2026-08-13) 由 UTF-8 改为 GBK：周立功 ZCANPRO 与旧版 Vector CANdb++ 均按 ANSI 读取 DBC，存为 UTF-8 会导致本文件所有中文注释乱码(rev2 实测)。维护注意：编辑本文件后必须仍以 GBK/ANSI 保存，勿转 UTF-8，也勿添加 BOM(加 BOM 会使 cantools/python-can 在第 1 行报 Invalid syntax)。Python 侧加载请显式指定 cantools.database.load_file(path, encoding='gbk')；需要 UTF-8 副本时用 iconv -f GBK -t UTF-8。本文件另有一个纯 ASCII 英文注释版 MD7123AHRS_CAN_V01.02.02_EN.dbc，用于跨语言环境交付(Vector CANdb++/CANoe 在非中文 Windows 上按 cp1252 解释本文件的 GBK 字节会乱码，更严重的是在乱码状态下用 CANdb++ 保存会把乱码固化进文件、原始中文永久丢失，所以给客户/海外或非中文 locale 环境请一律发英文版)。两份文件描述完全相同的总线矩阵——报文ID、信号布局、Value Table、属性、SIG_VALTYPE_ 全部等价，仅 CM_ 注释语言不同(已用 cantools 逐字段比对确认)；改动任一份必须同步改另一份。带 CM_ 标注的存疑项需协议维护者确认后才可作为最终交付依据。";
+CM_ BU_ Host "上位机/主控。接收AHRS周期性IMU/姿态数据，发起UCB命令及0x183配置读写请求。";
+CM_ BU_ AHRS_MD7123 "MD7123 AHRS模组(CAN-FD接口板型号)。默认CAN_ID_Config(Base ID)=0x180；支持多模组组网(BaseID步进0x10)，本DBC仅覆盖默认BaseID场景，其它BaseID需按偏移量另出DBC或参数化处理。";
+
+CM_ BO_ 385 "周期性IMU原始数据(校准后)。ID=BaseID+1，默认0x181。周期由AHRS_Config_Data.output_rate决定：100/200/500/1000Hz对应10/5/2/1ms，本文件GenMsgCycleTime按10ms(100Hz)标注，实际周期随配置变化。CAN FD, 64字节。字节布局已与 imu_output_common.c:ImuOutputCommon_PackImuPayload() 逐字节核对一致。";
+CM_ BO_ 386 "周期性姿态数据(欧拉角+四元数+融合状态)。ID=BaseID+2，默认0x182。周期规则同AHRS_IMU_Data。CAN FD, 64字节。字节布局已与 imu_output_common.c:ImuOutputCommon_PackAttPayload() 逐字节核对一致。";
+CM_ BO_ 387 "配置读写报文。ID=BaseID+3，默认0x183，固定不受BaseID配置字段本身影响(即配置报文ID始终是当前BaseID+3)。重要：本报文双向共用同一CAN ID —— Host->AHRS为读/写请求，AHRS->Host为当前配置应答/ACK，两者帧格式完全相同，仅靠CRC是否正确区分'只读上报(CRC错误)'还是'写入生效(CRC正确)'。DBC 无法为同一 ID 建两条 message，已用 BO_TX_BU_ 声明 AHRS_MD7123 与 Host 均可发送；signal 的 receiver 一律标为 Host，Host 发送方向请按业务场景反向理解。事件触发/On-Change，无Rolling Counter。注意本报文没有 Cycle 字段，byte61 属于保留区(见 Rev_Cfg_2)。字段越界/非法值的运行时回落规则见 imu_output_common.c:ImuOutputCommon_ApplyFieldDefaults()，未在DBC signal本身体现。";
+CM_ BO_ 1988 "UCB命令请求通道。固定ID 0x7C4，不受CAN_ID_Config(BaseID)影响。payload按function_code(简单多路复用开关)解释，事件触发(请求-应答)。注意：本message的详细payload字段拆分并非官方CAN Matrix xlsx直接产出(xlsx仅笼统标注59字节payload)，是结合App/ref_docs/MD7123_CAN_Interactive_Commands.md人工协议文档与源码Com_Cfg.c交叉整理，请与协议维护者确认后再作为最终交付依据。";
+CM_ BO_ 1996 "UCB命令响应通道。固定ID 0x7CC，不受CAN_ID_Config(BaseID)影响，其余说明同AHRS_UCB_Cmd_Req。";
+
+CM_ SG_ 385 systimer "系统相对时间(非UTC/非绝对时间)，单位ms。";
+CM_ SG_ 385 Gyro_X "X轴角速度(校准后)。Resolution按文档为1e-5，但该字段本身是IEEE754单精度浮点原始值(见SIG_VALTYPE_)，非整数量化scale，1e-5仅为原始物理分辨率参考。";
+CM_ SG_ 385 RS_SystemState "0=无 1=正常 2=故障 3=无（原文档定义如此，00/11均表示'无'，非常规二值状态，建议与协议作者确认该定义的实际含义）。";
+CM_ SG_ 385 RS_Reserved "Running_Status bit44-47，预留未来扩展。";
+CM_ SG_ 385 Rev_IMU "报文预留字段(byte54-60，7字节)，恒为0，非业务信号。原名 Rev，因与0x182/0x183同名字段位宽不同(Vector CANdb++ 的 signal 为数据库级全局对象，同名必须同定义)，rev2 起按报文重命名。";
+CM_ SG_ 385 Cycle "Rolling Counter，每帧自增，用于Host端丢帧检测。";
+CM_ SG_ 385 CRC16 "CRC-16/CCITT-FALSE(多项式0x1021，初值0xFFFF)，覆盖byte[0..61]，存于byte[62-63]小端。仅供只读校验，不代表可写业务量。";
+
+CM_ SG_ 386 FS_AttitudeQuality "0=Excellent 1=Good 2=Bad 3=NotTracking。";
+CM_ SG_ 386 FS_InitStateSummary_UNCONFIRMED "存疑字段：原始xlsx文档标注该状态为3态值(000/001/010/100/101/110/011/111共8种初始化组合)，但只标注了1个bit位号(bit7)，与紧邻的bit8(FilterDiverged)/bit9(SelfTestOrSensorFault)存在位宽冲突疑点。本DBC暂按1bit占位处理，不代表真实定义，请与协议作者核实bit7的真实位宽和位置后修订，不要直接采信此1bit定义用于生产判断。";
+CM_ SG_ 386 FS_Bit10_UndocumentedGap "bit10在原始xlsx Fusion_Status定义表中完全未定义(表格在bit9与bit11之间有空缺)，含义未知，本字段仅为占位保留位号，禁止赋予业务含义，请与协议作者确认是否遗漏。";
+CM_ SG_ 386 FS_Reserved "Fusion_Status bit13-31，预留未来扩展。";
+CM_ SG_ 386 Rev_Att_0 "报文预留字段第1段(byte50-57)，恒为0，非业务信号。原为单个88bit的Rev，超出DBC规范单信号64bit上限，rev2起拆为Rev_Att_0/Rev_Att_1两段。";
+CM_ SG_ 386 Rev_Att_1 "报文预留字段第2段(byte58-60)，恒为0，非业务信号。";
+CM_ SG_ 386 Cycle "Rolling Counter，每帧自增，用于Host端丢帧检测。";
+CM_ SG_ 386 CRC16 "CRC-16/CCITT-FALSE，覆盖byte[0..61]，存于byte[62-63]小端。";
+
+CM_ SG_ 387 sentence_ctrl "0=IMU+Att同时输出 1=仅输出IMU 2=仅输出Att。固件未对本字段做越界回落，非法值行为未定义。";
+CM_ SG_ 387 output_rate "0=100Hz 1=200Hz 2=500Hz 3=1000Hz。注意：原xlsx Matrix该字段Max标注为2(仅到500Hz)，但源码枚举OUTPUT_RATE_1000HZ=3确实存在且被UART协议文档等佐证支持1000Hz，本DBC按0-3(含1000Hz)建模，若1000Hz并非CAN通道正式支持的档位，请协议作者确认后调整Max。固件未对本字段做越界回落。";
+CM_ SG_ 387 Orientation_Index "0-23，24种正交安装方向索引，详见Value Table；索引定义按'前(Front)/右(Right)/下(Down)'三轴指向组合。固件未对本字段做越界回落。";
+CM_ SG_ 387 fusion_mode "0=6轴(陀螺+加速度) 1=9轴(陀螺+加速度+磁力计)。";
+CM_ SG_ 387 output_interface "0=CAN 1=UART 2=SPI。重要：固件按板型强制纠正本字段(imu_output_common.c:ImuOutputCommon_ApplyFieldDefaults)——MD7123(CAN板型，无SPI外设)收到2(SPI)会被静默改为0(CAN)；MD7123S(SPI板型，无CAN收发器)收到0(CAN)会被静默改为2(SPI)。因此写入该字段后回读值可能与写入值不同，上位机不要据此判定写入失败。";
+CM_ SG_ 387 IMU_Enable_Mask "Bit0-3=IMU0-3使能位掩码。合法取值仅0x01/0x03/0x04/0x0C/0x0F，其余非法值运行时自动回落为0x0F(全部使能)，回落逻辑在固件内实现，不在CAN总线上体现。";
+CM_ SG_ 387 CAN_ID_Config "CAN Base ID直接值，如0x180。取值为0或加3后越过11-bit标准帧范围时，运行时自动回落为默认值0x180，回落逻辑不在CAN总线上体现。修改本字段并写入生效后，AHRS_IMU_Data/AHRS_Att_Data/AHRS_Config_Data三条报文的CAN ID会随之整体偏移(UCB通道0x7C4/0x7CC固定不受影响)。";
+CM_ SG_ 387 Device_alias "设备别名，8字节ASCII字符串(byte28-35)，本DBC按64bit无符号原始值建模。还原方法：int(value).to_bytes(8,'little').rstrip(b'\\0').decode('ascii')。";
+CM_ SG_ 387 UART_Baud_rate_Config "0=115200 1=460800 2=921600(默认)。注意固件对本字段做的是钳位而非回落：大于2的值被钳到2(921600)，不是回落默认值。";
+CM_ SG_ 387 CAN_Baud_rate_Config_RESERVED "预留字段，当前固件完全未使用。原xlsx Matrix此字段Min/Max标注为0x180~0x7FF，明显是CAN ID范围而非波特率取值范围，怀疑是文档复制粘贴错误，本DBC不采信该范围，按无量纲8bit预留处理(min/max取8bit满量程以免CANoe误报越界)，请协议作者确认真实用途或删除该字段。";
+CM_ SG_ 387 SPI_mode "0-3对应SPI CPOL/CPHA四种组合，仅MD7123S(SPI接口板型)使用，MD7123(CAN接口板型)该字段无实际意义。注意固件对本字段做的是越界回落到0，不是钳位到3。";
+CM_ SG_ 387 Rev_Cfg_0 "报文预留字段第1段(byte39-46)，恒为0，非业务信号。原为单个184bit的Rev，超出DBC规范单信号64bit上限，rev2起拆为Rev_Cfg_0/1/2三段。";
+CM_ SG_ 387 Rev_Cfg_1 "报文预留字段第2段(byte47-54)，恒为0，非业务信号。";
+CM_ SG_ 387 Rev_Cfg_2 "报文预留字段第3段(byte55-61)，恒为0，非业务信号。注意本报文无Rolling Counter，IMU/Att报文中作为Cycle的byte61在本报文属于保留区。";
+CM_ SG_ 387 CRC16 "CRC-16/CCITT-FALSE，覆盖byte[0..61]，存于byte[62-63]小端。Host发起写请求时CRC必须正确才会写入生效并触发写Flash；CRC错误时设备按只读请求处理并原样应答当前配置。";
+
+CM_ SG_ 1988 SyncMsb "UCB帧头字节1，固定值0xBD(189)。min/max已收紧为189，便于CANoe直接高亮异常帧头。";
+CM_ SG_ 1988 SyncLsb "UCB帧头字节2，固定值0x64(100)。min/max已收紧为100。";
+CM_ SG_ 1988 function_code "命令码，作为简单多路复用(Simple Multiplexing, M/m 语法)的开关字段，取值见Value Table。请求方向为全0 payload、因而未拆分具体signal的命令码：0x06/0x07/0x09/0x20/0x30。0x22(UpgradeCheck)与0x23(SelectAppBlock)在固件Com_Cfg.c分派表中已注册但request handler为空实现，payload格式无协议文档定义，本DBC仅收录命令码名称、不建模payload。0x83(CFG_CONFIG)属UART/SPI通道的配置命令，CAN通道的配置走0x183独立报文，故不在本UCB通道的Value Table内。";
+CM_ SG_ 1988 Req_AppSize_u32 "0x08命令上报的新App镜像总字节数(byte3-6)。";
+CM_ SG_ 1988 Req_CRC32_A "0x08命令上报的Bank A镜像CRC32(byte7-10)，多项式0xEDB88320。";
+CM_ SG_ 1988 Req_CRC32_B "0x08命令上报的Bank B镜像CRC32(byte11-14)。";
+CM_ SG_ 1988 Req_WriteAddr24_BE "0x21 Write App命令的目标写入偏移地址，24bit，注意：本字段是协议里唯一的大端(Motorola/Big-Endian)字段，与全协议其余字段的小端(Intel)约定相反，属文档标注的历史遗留特例，请勿按小端解析。";
+CM_ SG_ 1988 Req_WriteData_0 "0x21 Write App命令的56字节写入数据块第1段(byte6-13)。原为单个448bit信号，超出DBC规范单信号64bit上限，rev2起拆为Req_WriteData_0..6共7段(每段8字节)。各段均为小端无符号整数，还原完整字节流：b''.join(int(seg).to_bytes(8,'little') for seg in [WriteData_0..WriteData_6])。";
+CM_ SG_ 1988 Req_WriteData_6 "0x21 Write App命令的56字节写入数据块第7段(byte54-61)。";
+CM_ SG_ 1988 Req_SamplingEnable "0x40 Set Sampling命令的开关值(byte3)。OTA前务必先发0x40关闭采集，否则周期帧会与0x21写命令抢占总线导致OTA超时。";
+CM_ SG_ 1988 CRC16 "CRC-16/CCITT-FALSE，覆盖byte[0..61]，存于byte[62-63]小端。";
+
+CM_ SG_ 1996 SyncMsb "UCB帧头字节1，固定值0xBD(189)。";
+CM_ SG_ 1996 SyncLsb "UCB帧头字节2，固定值0x64(100)。";
+CM_ SG_ 1996 function_code "命令码回显，作为简单多路复用开关字段。0x22响应的填充函数Com_FillUpgradeCheckPacket为空实现(未调用Com_FillPacketStruct)，响应payload内容不确定；0x23响应复用了Com_FillGetBootloaderVersionPacket，实际返回Bootloader版本字符串而非选块结果，疑为固件实现遗留问题，两者均未在本DBC建模payload，已向协议/固件维护者留档待确认。";
+CM_ SG_ 1996 Rsp_BootloaderVer_0 "0x06响应的版本字符串第1段(byte3-10)。完整格式为ASCII\"productName;version\\0\"，最长59字节(byte3-61)。原为单个472bit信号，超出DBC规范单信号64bit上限，rev2起拆为Rsp_BootloaderVer_0..7(前7段各8字节，第8段3字节)。各段均为小端无符号整数，还原方法：b''.join(int(s).to_bytes(8,'little') for s in seg0..seg6) + int(seg7).to_bytes(3,'little')，再按'\\0'截断解ASCII。App模式下该应答内容与0x07(Get App Version)等价，Bootloader模式下才返回真实BL版本。";
+CM_ SG_ 1996 Rsp_BootloaderVer_7 "0x06响应的版本字符串第8段(byte59-61)，3字节。";
+CM_ SG_ 1996 Rsp_AppVer_0 "0x07响应的版本字符串第1段(byte3-10)。完整格式为ASCII\"productName;appVersion;gitCommitHash\\0\"，最长59字节，分段与还原方法同Rsp_BootloaderVer_*。";
+CM_ SG_ 1996 Rsp_AppVer_7 "0x07响应的版本字符串第8段(byte59-61)，3字节。";
+CM_ SG_ 1996 Rsp_BankString "0x08响应，ASCII \"AA\"/\"BB\"/\"NA\"(byte3-4)，标识应当烧写的App Bank，\"NA\"表示错误。按16bit小端整数建模，还原：int(v).to_bytes(2,'little').decode('ascii')。";
+CM_ SG_ 1996 Rsp_McuSN_u64 "0x09响应，MCU UID衍生的64bit序列号(byte3-10)，始终有效。";
+CM_ SG_ 1996 Rsp_PcbaSN_0 "0x09响应，10字节ASCII PCBA序列号(byte11-20)的前8字节。原为单个80bit信号，超出DBC规范单信号64bit上限，rev2起拆为_0(8字节)/_1(2字节)两段。工厂SN未写入或magic校验失败时全为0x00。";
+CM_ SG_ 1996 Rsp_PcbaSN_1 "0x09响应，PCBA序列号(byte19-20)的后2字节。";
+CM_ SG_ 1996 Rsp_ProductSN_0 "0x09响应，10字节ASCII 整机产品序列号(byte21-30)的前8字节。分段原因同Rsp_PcbaSN_*。";
+CM_ SG_ 1996 Rsp_ProductSN_1 "0x09响应，整机产品序列号(byte29-30)的后2字节。";
+CM_ SG_ 1996 Rsp_HwSN "0x09响应，5字节ASCII 硬件序列号(byte31-35)。还原：int(v).to_bytes(5,'little').rstrip(b'\\0').decode('ascii')。";
+CM_ SG_ 1996 Rsp_JumpAppStatusString "0x20响应，ASCII状态字符(如\"OK\")，2字节(byte3-4)，由Bootloader填充。";
+CM_ SG_ 1996 Rsp_WriteResult "0x21响应，0=写入失败 1=写入成功(byte3)。注意首包(offset=0)因Flash擦除耗时，即使返回0也不代表失败，须按协议文档的重试规则处理。";
+CM_ SG_ 1996 Rsp_JumpBootloaderCondition "0x30响应，0x00=允许跳转Bootloader(byte3)，其余值含义未在源码中枚举完整，按原始值处理。设备发回响应后延时100ms才真正跳转，Host需等待>=2s待BL初始化完成再发后续命令。";
+CM_ SG_ 1996 Rsp_CurrentSamplingState "0x40响应，0=采集关闭 1=采集开启(byte3)。";
+CM_ SG_ 1996 CRC16 "CRC-16/CCITT-FALSE，覆盖byte[0..61]，存于byte[62-63]小端。";
+
+BA_DEF_ BO_ "VFrameFormat" ENUM "StandardCAN","StandardCAN_FD","ExtendedCAN","ExtendedCAN_FD";
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","OnEvent","NoMsgSendType";
+BA_DEF_DEF_ "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "NoMsgSendType";
+BA_ "VFrameFormat" BO_ 385 1;
+BA_ "VFrameFormat" BO_ 386 1;
+BA_ "VFrameFormat" BO_ 387 1;
+BA_ "VFrameFormat" BO_ 1988 1;
+BA_ "VFrameFormat" BO_ 1996 1;
+BA_ "GenMsgCycleTime" BO_ 385 10;
+BA_ "GenMsgCycleTime" BO_ 386 10;
+BA_ "GenMsgCycleTime" BO_ 387 0;
+BA_ "GenMsgCycleTime" BO_ 1988 0;
+BA_ "GenMsgCycleTime" BO_ 1996 0;
+BA_ "GenMsgSendType" BO_ 385 0;
+BA_ "GenMsgSendType" BO_ 386 0;
+BA_ "GenMsgSendType" BO_ 387 1;
+BA_ "GenMsgSendType" BO_ 1988 1;
+BA_ "GenMsgSendType" BO_ 1996 1;
+
+VAL_ 385 RS_SystemState 0 "NONE" 1 "NORMAL" 2 "FAULT" 3 "NONE_ALT" ;
+VAL_ 386 RS_SystemState 0 "NONE" 1 "NORMAL" 2 "FAULT" 3 "NONE_ALT" ;
+VAL_ 386 FS_AttitudeQuality 0 "Excellent" 1 "Good" 2 "Bad" 3 "NotTracking" ;
+VAL_ 387 sentence_ctrl 0 "IMU_AND_ATT" 1 "IMU_ONLY" 2 "ATT_ONLY" ;
+VAL_ 387 output_rate 0 "100Hz" 1 "200Hz" 2 "500Hz" 3 "1000Hz" ;
+VAL_ 387 fusion_mode 0 "6AXIS_GYRO_ACC" 1 "9AXIS_GYRO_ACC_MAG" ;
+VAL_ 387 output_interface 0 "CAN" 1 "UART" 2 "SPI" ;
+VAL_ 387 UART_Baud_rate_Config 0 "115200" 1 "460800" 2 "921600" ;
+VAL_ 387 SPI_mode 0 "CPOL0_CPHA0" 1 "CPOL0_CPHA1" 2 "CPOL1_CPHA0" 3 "CPOL1_CPHA1" ;
+VAL_ 387 Orientation_Index 0 "F+X_R+Y_D+Z" 1 "F-X_R-Y_D+Z" 2 "F-Y_R+X_D+Z" 3 "F+Y_R-X_D+Z" 4 "F-X_R+Y_D-Z" 5 "F+X_R-Y_D-Z" 6 "F+Y_R+X_D-Z" 7 "F-Y_R-X_D-Z" 8 "F-Z_R+Y_D+X" 9 "F+Z_R-Y_D+X" 10 "F+Y_R+Z_D+X" 11 "F-Y_R-Z_D+X" 12 "F+Z_R+Y_D-X" 13 "F-Z_R-Y_D-X" 14 "F-Y_R+Z_D-X" 15 "F+Y_R-Z_D-X" 16 "F-X_R+Z_D+Y" 17 "F+X_R-Z_D+Y" 18 "F+Z_R+X_D+Y" 19 "F-Z_R-X_D+Y" 20 "F+X_R+Z_D-Y" 21 "F-X_R-Z_D-Y" 22 "F-Z_R+X_D-Y" 23 "F+Z_R-X_D-Y" ;
+VAL_ 1988 function_code 6 "GetBootloaderVersion" 7 "GetAppVersion" 8 "GetAppCurrentBank" 9 "GetSerialNumber" 32 "JumpApp" 33 "WriteApp" 34 "UpgradeCheck_NotImplemented" 35 "SelectAppBlock_NotImplemented" 48 "JumpBootloader" 64 "SetSampling" ;
+VAL_ 1988 Req_SamplingEnable 0 "Disable" 1 "Enable" ;
+VAL_ 1996 function_code 6 "GetBootloaderVersion" 7 "GetAppVersion" 8 "GetAppCurrentBank" 9 "GetSerialNumber" 32 "JumpApp" 33 "WriteApp" 34 "UpgradeCheck_NotImplemented" 35 "SelectAppBlock_NotImplemented" 48 "JumpBootloader" 64 "SetSampling" ;
+VAL_ 1996 Rsp_WriteResult 0 "Fail" 1 "Success" ;
+VAL_ 1996 Rsp_CurrentSamplingState 0 "Disabled" 1 "Enabled" ;
+
+SIG_VALTYPE_ 385 Gyro_X : 1;
+SIG_VALTYPE_ 385 Gyro_Y : 1;
+SIG_VALTYPE_ 385 Gyro_Z : 1;
+SIG_VALTYPE_ 385 Acc_X : 1;
+SIG_VALTYPE_ 385 Acc_Y : 1;
+SIG_VALTYPE_ 385 Acc_Z : 1;
+SIG_VALTYPE_ 385 Mag_X : 1;
+SIG_VALTYPE_ 385 Mag_Y : 1;
+SIG_VALTYPE_ 385 Mag_Z : 1;
+SIG_VALTYPE_ 385 Temp : 1;
+SIG_VALTYPE_ 386 Attitude_X : 1;
+SIG_VALTYPE_ 386 Attitude_Y : 1;
+SIG_VALTYPE_ 386 Attitude_Z : 1;
+SIG_VALTYPE_ 386 Quat_X : 1;
+SIG_VALTYPE_ 386 Quat_Y : 1;
+SIG_VALTYPE_ 386 Quat_Z : 1;
+SIG_VALTYPE_ 386 Quat_W : 1;
+SIG_VALTYPE_ 386 Temp : 1;
+SIG_VALTYPE_ 387 latitude : 2;
+SIG_VALTYPE_ 387 longitude : 2;
+SIG_VALTYPE_ 387 height : 1;

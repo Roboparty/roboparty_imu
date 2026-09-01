@@ -1,0 +1,377 @@
+VERSION "01.02.02"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Host AHRS_MD7123
+
+BO_ 385 AHRS_IMU_Data: 64 AHRS_MD7123
+ SG_ systimer : 0|64@1+ (1,0) [0|18446744073709551615] "ms" Host
+ SG_ Gyro_X : 64|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Gyro_Y : 96|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Gyro_Z : 128|32@1- (1,0) [-2000|2000] "deg/s" Host
+ SG_ Acc_X : 160|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Acc_Y : 192|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Acc_Z : 224|32@1- (1,0) [-160|160] "m/s^2" Host
+ SG_ Mag_X : 256|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Mag_Y : 288|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Mag_Z : 320|32@1- (1,0) [-3000|3000] "uT" Host
+ SG_ Temp : 352|32@1- (1,0) [-40|85] "degC" Host
+ SG_ RS_SystemState : 384|2@1+ (1,0) [0|3] "" Host
+ SG_ RS_GyroFault : 386|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_X : 387|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Y : 388|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Z : 389|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_X : 390|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Y : 391|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Z : 392|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_X : 393|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Y : 394|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Z : 395|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_X : 396|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Y : 397|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Z : 398|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroTempWarning : 399|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelFault : 400|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_X : 401|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Y : 402|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Z : 403|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_X : 404|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Y : 405|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Z : 406|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_X : 407|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Y : 408|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Z : 409|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_X : 410|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Y : 411|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Z : 412|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelTempWarning : 413|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagFault : 414|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_X : 415|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Y : 416|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Z : 417|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_X : 418|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Y : 419|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Z : 420|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_X : 421|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Y : 422|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Z : 423|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_X : 424|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Y : 425|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Z : 426|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagTempWarning : 427|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_Reserved : 428|4@1+ (1,0) [0|15] "" Host
+ SG_ Rev_IMU : 432|56@1+ (1,0) [0|72057594037927935] "" Host
+ SG_ Cycle : 488|8@1+ (1,0) [0|255] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 386 AHRS_Att_Data: 64 AHRS_MD7123
+ SG_ systimer : 0|64@1+ (1,0) [0|18446744073709551615] "ms" Host
+ SG_ Attitude_X : 64|32@1- (1,0) [-180|180] "deg" Host
+ SG_ Attitude_Y : 96|32@1- (1,0) [-90|90] "deg" Host
+ SG_ Attitude_Z : 128|32@1- (1,0) [-180|180] "deg" Host
+ SG_ Quat_X : 160|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_Y : 192|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_Z : 224|32@1- (1,0) [-1|1] "" Host
+ SG_ Quat_W : 256|32@1- (1,0) [-1|1] "" Host
+ SG_ Temp : 288|32@1- (1,0) [-40|85] "degC" Host
+ SG_ FS_AttitudeQuality : 320|2@1+ (1,0) [0|3] "" Host
+ SG_ FS_GyroBiasAbnormal : 322|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_AccelInvalid : 323|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_MagInvalid : 324|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_MagDisturbance : 325|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_AccelDisturbance : 326|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_InitStateSummary_UNCONFIRMED : 327|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_FilterDiverged : 328|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_SelfTestOrSensorFault : 329|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_Bit10_UndocumentedGap : 330|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_DisturbanceCompensated : 331|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_HeadingAccuracyGood : 332|1@1+ (1,0) [0|1] "" Host
+ SG_ FS_Reserved : 333|19@1+ (1,0) [0|524287] "" Host
+ SG_ RS_SystemState : 352|2@1+ (1,0) [0|3] "" Host
+ SG_ RS_GyroFault : 354|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_X : 355|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Y : 356|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroOverrange_Z : 357|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_X : 358|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Y : 359|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroBiasAbnormal_Z : 360|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_X : 361|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Y : 362|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroStuck_Z : 363|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_X : 364|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Y : 365|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroSelfTestFail_Z : 366|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_GyroTempWarning : 367|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelFault : 368|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_X : 369|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Y : 370|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelOverrange_Z : 371|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_X : 372|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Y : 373|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelBiasAbnormal_Z : 374|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_X : 375|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Y : 376|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelStuck_Z : 377|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_X : 378|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Y : 379|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelSelfTestFail_Z : 380|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_AccelTempWarning : 381|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagFault : 382|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_X : 383|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Y : 384|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagOverrange_Z : 385|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_X : 386|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Y : 387|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagBiasAbnormal_Z : 388|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_X : 389|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Y : 390|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagStuck_Z : 391|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_X : 392|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Y : 393|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagSelfTestFail_Z : 394|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_MagTempWarning : 395|1@1+ (1,0) [0|1] "" Host
+ SG_ RS_Reserved : 396|4@1+ (1,0) [0|15] "" Host
+ SG_ Rev_Att_0 : 400|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Att_1 : 464|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Cycle : 488|8@1+ (1,0) [0|255] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 387 AHRS_Config_Data: 64 AHRS_MD7123
+ SG_ sentence_ctrl : 0|8@1+ (1,0) [0|2] "" Host
+ SG_ output_rate : 8|8@1+ (1,0) [0|3] "" Host
+ SG_ Orientation_Index : 16|8@1+ (1,0) [0|23] "" Host
+ SG_ fusion_mode : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ latitude : 32|64@1- (1,0) [-90|90] "deg" Host
+ SG_ longitude : 96|64@1- (1,0) [-180|180] "deg" Host
+ SG_ height : 160|32@1- (1,0) [-1000|400000] "m" Host
+ SG_ output_interface : 192|8@1+ (1,0) [0|2] "" Host
+ SG_ IMU_Enable_Mask : 200|8@1+ (1,0) [1|15] "" Host
+ SG_ CAN_ID_Config : 208|16@1+ (1,0) [0|2047] "" Host
+ SG_ Device_alias : 224|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ UART_Baud_rate_Config : 288|8@1+ (1,0) [0|2] "" Host
+ SG_ CAN_Baud_rate_Config_RESERVED : 296|8@1+ (1,0) [0|255] "" Host
+ SG_ SPI_mode : 304|8@1+ (1,0) [0|3] "" Host
+ SG_ Rev_Cfg_0 : 312|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Cfg_1 : 376|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rev_Cfg_2 : 440|56@1+ (1,0) [0|72057594037927935] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+BO_ 1988 AHRS_UCB_Cmd_Req: 64 Host
+ SG_ SyncMsb : 0|8@1+ (1,0) [189|189] "" AHRS_MD7123
+ SG_ SyncLsb : 8|8@1+ (1,0) [100|100] "" AHRS_MD7123
+ SG_ function_code M : 16|8@1+ (1,0) [0|255] "" AHRS_MD7123
+ SG_ Req_AppSize_u32 m8 : 24|32@1+ (1,0) [0|4294967295] "byte" AHRS_MD7123
+ SG_ Req_CRC32_A m8 : 56|32@1+ (1,0) [0|4294967295] "" AHRS_MD7123
+ SG_ Req_CRC32_B m8 : 88|32@1+ (1,0) [0|4294967295] "" AHRS_MD7123
+ SG_ Req_WriteAddr24_BE m33 : 31|24@0+ (1,0) [0|16777215] "" AHRS_MD7123
+ SG_ Req_WriteData_0 m33 : 48|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_1 m33 : 112|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_2 m33 : 176|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_3 m33 : 240|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_4 m33 : 304|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_5 m33 : 368|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_WriteData_6 m33 : 432|64@1+ (1,0) [0|18446744073709551615] "" AHRS_MD7123
+ SG_ Req_SamplingEnable m64 : 24|8@1+ (1,0) [0|1] "" AHRS_MD7123
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" AHRS_MD7123
+
+BO_ 1996 AHRS_UCB_Cmd_Rsp: 64 AHRS_MD7123
+ SG_ SyncMsb : 0|8@1+ (1,0) [189|189] "" Host
+ SG_ SyncLsb : 8|8@1+ (1,0) [100|100] "" Host
+ SG_ function_code M : 16|8@1+ (1,0) [0|255] "" Host
+ SG_ Rsp_BootloaderVer_0 m6 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_1 m6 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_2 m6 : 152|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_3 m6 : 216|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_4 m6 : 280|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_5 m6 : 344|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_6 m6 : 408|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_BootloaderVer_7 m6 : 472|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Rsp_AppVer_0 m7 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_1 m7 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_2 m7 : 152|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_3 m7 : 216|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_4 m7 : 280|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_5 m7 : 344|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_6 m7 : 408|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_AppVer_7 m7 : 472|24@1+ (1,0) [0|16777215] "" Host
+ SG_ Rsp_BankString m8 : 24|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_McuSN_u64 m9 : 24|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_PcbaSN_0 m9 : 88|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_PcbaSN_1 m9 : 152|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_ProductSN_0 m9 : 168|64@1+ (1,0) [0|18446744073709551615] "" Host
+ SG_ Rsp_ProductSN_1 m9 : 232|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_HwSN m9 : 248|40@1+ (1,0) [0|1099511627775] "" Host
+ SG_ Rsp_JumpAppStatusString m32 : 24|16@1+ (1,0) [0|65535] "" Host
+ SG_ Rsp_WriteResult m33 : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ Rsp_JumpBootloaderCondition m48 : 24|8@1+ (1,0) [0|255] "" Host
+ SG_ Rsp_CurrentSamplingState m64 : 24|8@1+ (1,0) [0|1] "" Host
+ SG_ CRC16 : 496|16@1+ (1,0) [0|65535] "" Host
+
+
+
+BO_TX_BU_ 387 : AHRS_MD7123,Host;
+
+CM_ "MD7123AHRS CAN protocol DBC, corresponding to CAN Matrix V01.02.02. Sources: MD7123AHRS_CAN_Matrix_V01.02.02_with_UCB.xlsx + App/Service/Com/Common/imu_output_common.h/.c + App/ref_docs/MD7123_CAN_Interactive_Commands.md + App/Service/Com/Com_Cfg.c. Default CAN_ID_Config (Base ID) = 0x180. FILE ENCODING: pure 7-bit ASCII + CRLF, no BOM. This is the portability-first variant: it contains no non-ASCII byte, so all comments render identically under any Windows ANSI code page (936 / 1252 / ...) in Vector CANdb++ and CANoe, ZLG ZCANPRO, cantools / python-can and other tools, and cannot be silently corrupted by a save performed on a machine with a different locale. Its Chinese-annotated counterpart is MD7123AHRS_CAN_V01.02.02.dbc (GBK / ANSI encoded, intended for domestic tooling). IMPORTANT: both files describe the identical bus matrix -- message IDs, signal layout, value tables, attributes and SIG_VALTYPE_ entries are equivalent; ONLY the CM_ comment language differs. When you edit one file, apply the same change to the other. DBC revision history: rev1 (2026-08-13) initial; rev2 (2026-08-13) DBC-spec compliance fixes -- split every signal wider than 64 bit (DBC limits a single signal to 64 bit), removed the Rev name collision (same name, different widths across messages), merged the BA_DEF_ definition block, added command codes 0x22 / 0x23, corrected min/max ranges that triggered false out-of-range warnings, added BO_TX_BU_ to declare the bidirectional 0x183 senders; rev3 (2026-08-13) encoding split into this ASCII variant plus the GBK Chinese variant. Items flagged in CM_ comments as unconfirmed MUST be confirmed with the protocol owner before this file is used as a final deliverable.";
+CM_ BU_ Host "Host / master controller. Receives the cyclic IMU and attitude data, issues UCB commands and 0x183 configuration read/write requests.";
+CM_ BU_ AHRS_MD7123 "MD7123 AHRS module (CAN-FD interface board variant). Default CAN_ID_Config (Base ID) = 0x180. Multi-module networks are supported with a Base ID step of 0x10; this DBC covers only the default Base ID, other Base IDs require a separate DBC or parameterized handling.";
+
+CM_ BO_ 385 "Cyclic raw IMU data (post-calibration). ID = BaseID+1, default 0x181. The period is selected by AHRS_Config_Data.output_rate: 100 / 200 / 500 / 1000 Hz correspond to 10 / 5 / 2 / 1 ms. GenMsgCycleTime is annotated here as 10 ms (100 Hz); the actual period follows the configuration. CAN FD, 64 bytes. The byte layout has been verified byte-for-byte against imu_output_common.c:ImuOutputCommon_PackImuPayload().";
+CM_ BO_ 386 "Cyclic attitude data (Euler angles + quaternion + fusion status). ID = BaseID+2, default 0x182. Period rules identical to AHRS_IMU_Data. CAN FD, 64 bytes. The byte layout has been verified byte-for-byte against imu_output_common.c:ImuOutputCommon_PackAttPayload().";
+CM_ BO_ 387 "Configuration read/write message. ID = BaseID+3, default 0x183; it is always the current BaseID+3 and is not affected by the Base ID field itself. IMPORTANT: this message shares one CAN ID in both directions -- Host->AHRS is a read/write request, AHRS->Host is the current-configuration reply / ACK. The frame format is identical in both directions; the only discriminator is the CRC: an incorrect CRC means read-only reporting, a correct CRC means the write takes effect. DBC cannot define two messages on one ID, so BO_TX_BU_ declares both AHRS_MD7123 and Host as senders; every signal receiver is listed as Host, so for the Host->AHRS direction read the receiver field in reverse. Event-triggered / on-change, no rolling counter. Note this message has no Cycle field: byte 61, which carries Cycle in the IMU / attitude messages, belongs to the reserved area here (see Rev_Cfg_2). Runtime fallback rules for out-of-range or illegal values live in imu_output_common.c:ImuOutputCommon_ApplyFieldDefaults() and are not expressed by the DBC signals themselves.";
+CM_ BO_ 1988 "UCB command request channel. Fixed ID 0x7C4, not affected by CAN_ID_Config (Base ID). The payload is interpreted according to function_code (simple multiplexing switch). Event-triggered (request-response). NOTE: the detailed payload breakdown of this message is not a direct output of the official CAN Matrix xlsx (which only states a generic 59-byte payload); it was reconstructed by cross-checking App/ref_docs/MD7123_CAN_Interactive_Commands.md against the firmware source Com_Cfg.c. Confirm with the protocol owner before using it as a final deliverable.";
+CM_ BO_ 1996 "UCB command response channel. Fixed ID 0x7CC, not affected by CAN_ID_Config (Base ID). All other notes are identical to AHRS_UCB_Cmd_Req.";
+
+CM_ SG_ 385 systimer "System-relative time in ms (not UTC, not an absolute timestamp).";
+CM_ SG_ 385 Gyro_X "X-axis angular rate (post-calibration). The documented resolution is 1e-5, but this field itself carries a raw IEEE-754 single-precision float value (see SIG_VALTYPE_), not an integer-quantized scale; 1e-5 is only a reference for the underlying physical resolution.";
+CM_ SG_ 385 RS_SystemState "0 = none, 1 = normal, 2 = fault, 3 = none. UNCONFIRMED: the source document really does define both 00 and 11 as none, which is not a conventional two-state encoding. Confirm the intended meaning with the protocol owner.";
+CM_ SG_ 385 RS_Reserved "Running_Status bits 44-47, reserved for future extension.";
+CM_ SG_ 385 Rev_IMU "Message reserved area (bytes 54-60, 7 bytes), always zero, not a functional signal. Formerly named Rev; renamed per message from rev2 onward because the same name carried different widths in 0x182 / 0x183 (in Vector CANdb++ a signal is a database-level object, so identical names must share an identical definition).";
+CM_ SG_ 385 Cycle "Rolling counter, incremented every frame, used by the host for frame-loss detection.";
+CM_ SG_ 385 CRC16 "CRC-16/CCITT-FALSE (polynomial 0x1021, init 0xFFFF) over bytes 0-61, stored little-endian in bytes 62-63. Read-only integrity check, not a writable functional quantity.";
+
+CM_ SG_ 386 FS_AttitudeQuality "0 = Excellent, 1 = Good, 2 = Bad, 3 = NotTracking.";
+CM_ SG_ 386 FS_InitStateSummary_UNCONFIRMED "UNCONFIRMED FIELD: the source xlsx describes this status as a three-state value (8 initialization combinations: 000 / 001 / 010 / 100 / 101 / 110 / 011 / 111) yet assigns it only a single bit position (bit 7), which conflicts in width with the adjacent bit 8 (FilterDiverged) and bit 9 (SelfTestOrSensorFault). This DBC models it as a 1-bit placeholder only; that does NOT represent the true definition. Confirm the real width and position of bit 7 with the protocol owner and revise. Do not rely on this 1-bit definition for production decisions.";
+CM_ SG_ 386 FS_Bit10_UndocumentedGap "Bit 10 is entirely undefined in the original xlsx Fusion_Status table (the table has a gap between bit 9 and bit 11). Its meaning is unknown. This signal is a placeholder that reserves the bit position only -- do NOT assign any functional meaning to it. Confirm with the protocol owner whether it is an omission.";
+CM_ SG_ 386 FS_Reserved "Fusion_Status bits 13-31, reserved for future extension.";
+CM_ SG_ 386 Rev_Att_0 "Message reserved area, segment 1 (bytes 50-57), always zero, not a functional signal. Formerly a single 88-bit Rev signal, which exceeded the 64-bit per-signal limit of the DBC specification; split into Rev_Att_0 / Rev_Att_1 from rev2 onward.";
+CM_ SG_ 386 Rev_Att_1 "Message reserved area, segment 2 (bytes 58-60), always zero, not a functional signal.";
+CM_ SG_ 386 Cycle "Rolling counter, incremented every frame, used by the host for frame-loss detection.";
+CM_ SG_ 386 CRC16 "CRC-16/CCITT-FALSE over bytes 0-61, stored little-endian in bytes 62-63.";
+
+CM_ SG_ 387 sentence_ctrl "0 = output IMU and attitude, 1 = output IMU only, 2 = output attitude only. The firmware performs NO range check or fallback on this field; behaviour for illegal values is undefined.";
+CM_ SG_ 387 output_rate "0 = 100 Hz, 1 = 200 Hz, 2 = 500 Hz, 3 = 1000 Hz. NOTE: the original xlsx matrix states Max = 2 (up to 500 Hz only), but the firmware enum OUTPUT_RATE_1000HZ = 3 does exist and 1000 Hz support is corroborated by the UART protocol document. This DBC models 0-3 including 1000 Hz; if 1000 Hz is not an officially supported step on the CAN channel, have the protocol owner confirm and adjust Max. The firmware performs no range fallback on this field.";
+CM_ SG_ 387 Orientation_Index "0-23, index of the 24 orthogonal mounting orientations; see the value table. The index encodes the Front / Right / Down axis-direction combination. The firmware performs no range fallback on this field.";
+CM_ SG_ 387 fusion_mode "0 = 6-axis (gyro + accelerometer), 1 = 9-axis (gyro + accelerometer + magnetometer).";
+CM_ SG_ 387 output_interface "0 = CAN, 1 = UART, 2 = SPI. IMPORTANT: the firmware silently corrects this field according to the board variant (imu_output_common.c:ImuOutputCommon_ApplyFieldDefaults) -- on MD7123 (CAN board, no SPI peripheral) a written value of 2 (SPI) is forced to 0 (CAN); on MD7123S (SPI board, no CAN transceiver) a written value of 0 (CAN) is forced to 2 (SPI). Therefore the value read back may differ from the value written, and the host must NOT treat that as a failed write.";
+CM_ SG_ 387 IMU_Enable_Mask "Bits 0-3 = enable mask for IMU0-IMU3. The only legal values are 0x01 / 0x03 / 0x04 / 0x0C / 0x0F; any other value falls back at runtime to 0x0F (all enabled). The fallback happens inside the firmware and is not visible on the CAN bus.";
+CM_ SG_ 387 CAN_ID_Config "CAN Base ID as a direct value, e.g. 0x180. If the value is 0, or if value+3 would leave the 11-bit standard-frame range, it falls back at runtime to the default 0x180; the fallback is not visible on the CAN bus. Once this field is written and takes effect, the CAN IDs of AHRS_IMU_Data / AHRS_Att_Data / AHRS_Config_Data shift together (the UCB channels 0x7C4 / 0x7CC are fixed and unaffected).";
+CM_ SG_ 387 Device_alias "Device alias, an 8-byte ASCII string (bytes 28-35), modelled here as a raw 64-bit unsigned value. Decode with: int(value).to_bytes(8,'little').rstrip(b'\\0').decode('ascii').";
+CM_ SG_ 387 UART_Baud_rate_Config "0 = 115200, 1 = 460800, 2 = 921600 (default). NOTE: the firmware CLAMPS this field rather than falling back -- values above 2 are clamped to 2 (921600), not reset to the default.";
+CM_ SG_ 387 CAN_Baud_rate_Config_RESERVED "Reserved field, entirely unused by the current firmware. The original xlsx matrix lists Min/Max as 0x180-0x7FF, which is clearly a CAN ID range rather than a baud-rate range and is suspected to be a copy-paste error in the document. This DBC does not adopt that range and treats the field as a dimensionless 8-bit reserved value (min/max set to the full 8-bit range to avoid false out-of-range warnings in CANoe). Have the protocol owner confirm the real purpose or remove the field.";
+CM_ SG_ 387 SPI_mode "0-3 map to the four SPI CPOL/CPHA combinations. Used only by MD7123S (SPI interface board); on MD7123 (CAN interface board) this field has no effect. NOTE: for this field the firmware falls back to 0 on an out-of-range value rather than clamping to 3.";
+CM_ SG_ 387 Rev_Cfg_0 "Message reserved area, segment 1 (bytes 39-46), always zero, not a functional signal. Formerly a single 184-bit Rev signal, which exceeded the 64-bit per-signal limit of the DBC specification; split into Rev_Cfg_0 / _1 / _2 from rev2 onward.";
+CM_ SG_ 387 Rev_Cfg_1 "Message reserved area, segment 2 (bytes 47-54), always zero, not a functional signal.";
+CM_ SG_ 387 Rev_Cfg_2 "Message reserved area, segment 3 (bytes 55-61), always zero, not a functional signal. Note this message has no rolling counter: byte 61, which carries Cycle in the IMU / attitude messages, is part of the reserved area here.";
+CM_ SG_ 387 CRC16 "CRC-16/CCITT-FALSE over bytes 0-61, stored little-endian in bytes 62-63. For a host write request the CRC must be correct for the write to take effect and trigger the flash write; if the CRC is wrong the device treats the frame as a read-only request and echoes the current configuration unchanged.";
+
+CM_ SG_ 1988 SyncMsb "UCB header byte 1, fixed value 0xBD (189). min/max are narrowed to 189 so that CANoe highlights a malformed header directly.";
+CM_ SG_ 1988 SyncLsb "UCB header byte 2, fixed value 0x64 (100). min/max are narrowed to 100.";
+CM_ SG_ 1988 function_code "Command code, acting as the simple-multiplexing (Simple Multiplexing, M/m syntax) switch field; see the value table. Command codes whose request direction is an all-zero payload and therefore have no dedicated signals: 0x06 / 0x07 / 0x09 / 0x20 / 0x30. 0x22 (UpgradeCheck) and 0x23 (SelectAppBlock) are registered in the firmware dispatch table in Com_Cfg.c but their request handlers are empty stubs and no payload format is defined in any protocol document, so this DBC records the command-code names only and does not model their payloads. 0x83 (CFG_CONFIG) is the configuration command of the UART / SPI channels; on CAN, configuration goes through the separate 0x183 message, which is why 0x83 does not appear in this UCB value table.";
+CM_ SG_ 1988 Req_AppSize_u32 "Total size in bytes of the new App image, reported by command 0x08 (bytes 3-6).";
+CM_ SG_ 1988 Req_CRC32_A "CRC32 of the Bank A image, reported by command 0x08 (bytes 7-10). Polynomial 0xEDB88320.";
+CM_ SG_ 1988 Req_CRC32_B "CRC32 of the Bank B image, reported by command 0x08 (bytes 11-14).";
+CM_ SG_ 1988 Req_WriteAddr24_BE "Target write offset of command 0x21 (Write App), 24 bit. NOTE: this is the only big-endian (Motorola) field in the whole protocol, opposite to the little-endian (Intel) convention used everywhere else. It is a documented legacy exception -- do NOT parse it as little-endian.";
+CM_ SG_ 1988 Req_WriteData_0 "Segment 1 (bytes 6-13) of the 56-byte data block of command 0x21 (Write App). Formerly a single 448-bit signal, which exceeded the 64-bit per-signal limit of the DBC specification; split into Req_WriteData_0 through _6 (7 segments of 8 bytes) from rev2 onward. Every segment is a little-endian unsigned integer; restore the full byte stream with: b''.join(int(seg).to_bytes(8,'little') for seg in [WriteData_0 .. WriteData_6]).";
+CM_ SG_ 1988 Req_WriteData_6 "Segment 7 (bytes 54-61) of the 56-byte data block of command 0x21 (Write App).";
+CM_ SG_ 1988 Req_SamplingEnable "Switch value of command 0x40 (Set Sampling), byte 3. Always disable sampling with 0x40 before starting an OTA, otherwise the cyclic frames compete with the 0x21 write commands for the bus and the OTA is very likely to time out.";
+CM_ SG_ 1988 CRC16 "CRC-16/CCITT-FALSE over bytes 0-61, stored little-endian in bytes 62-63.";
+
+CM_ SG_ 1996 SyncMsb "UCB header byte 1, fixed value 0xBD (189).";
+CM_ SG_ 1996 SyncLsb "UCB header byte 2, fixed value 0x64 (100).";
+CM_ SG_ 1996 function_code "Echo of the command code, acting as the simple-multiplexing switch field. The 0x22 response filler Com_FillUpgradeCheckPacket is an empty stub (it never calls Com_FillPacketStruct), so the response payload content is indeterminate. The 0x23 response reuses Com_FillGetBootloaderVersionPacket and therefore returns the bootloader version string instead of a block-selection result, which looks like leftover firmware code. Neither payload is modelled in this DBC; both are recorded here pending confirmation by the protocol / firmware owner.";
+CM_ SG_ 1996 Rsp_BootloaderVer_0 "Segment 1 (bytes 3-10) of the version string returned by command 0x06. The full format is the ASCII string \"productName;version\\0\", up to 59 bytes (bytes 3-61). Formerly a single 472-bit signal, which exceeded the 64-bit per-signal limit of the DBC specification; split into Rsp_BootloaderVer_0 through _7 from rev2 onward (first 7 segments of 8 bytes, 8th segment 3 bytes). Every segment is a little-endian unsigned integer; restore with: b''.join(int(s).to_bytes(8,'little') for s in seg0..seg6) + int(seg7).to_bytes(3,'little'), then cut at the first '\\0' and decode as ASCII. In App mode this response is equivalent to 0x07 (Get App Version); only in bootloader mode does it return the real bootloader version.";
+CM_ SG_ 1996 Rsp_BootloaderVer_7 "Segment 8 (bytes 59-61, 3 bytes) of the version string returned by command 0x06.";
+CM_ SG_ 1996 Rsp_AppVer_0 "Segment 1 (bytes 3-10) of the version string returned by command 0x07. The full format is the ASCII string \"productName;appVersion;gitCommitHash\\0\", up to 59 bytes. Segmentation and restore procedure identical to Rsp_BootloaderVer_*.";
+CM_ SG_ 1996 Rsp_AppVer_7 "Segment 8 (bytes 59-61, 3 bytes) of the version string returned by command 0x07.";
+CM_ SG_ 1996 Rsp_BankString "Response to command 0x08: ASCII \"AA\" / \"BB\" / \"NA\" (bytes 3-4) identifying the App bank to be programmed; \"NA\" indicates an error. Modelled as a 16-bit little-endian integer; decode with int(v).to_bytes(2,'little').decode('ascii').";
+CM_ SG_ 1996 Rsp_McuSN_u64 "Response to command 0x09: 64-bit serial number derived from the MCU UID (bytes 3-10). Always valid.";
+CM_ SG_ 1996 Rsp_PcbaSN_0 "Response to command 0x09: first 8 bytes of the 10-byte ASCII PCBA serial number (bytes 11-20). Formerly a single 80-bit signal, which exceeded the 64-bit per-signal limit of the DBC specification; split into _0 (8 bytes) and _1 (2 bytes) from rev2 onward. All zero bytes if the factory SN was never written or its magic check failed.";
+CM_ SG_ 1996 Rsp_PcbaSN_1 "Response to command 0x09: last 2 bytes of the PCBA serial number (bytes 19-20).";
+CM_ SG_ 1996 Rsp_ProductSN_0 "Response to command 0x09: first 8 bytes of the 10-byte ASCII product serial number (bytes 21-30). Split for the same reason as Rsp_PcbaSN_*.";
+CM_ SG_ 1996 Rsp_ProductSN_1 "Response to command 0x09: last 2 bytes of the product serial number (bytes 29-30).";
+CM_ SG_ 1996 Rsp_HwSN "Response to command 0x09: 5-byte ASCII hardware serial number (bytes 31-35). Decode with int(v).to_bytes(5,'little').rstrip(b'\\0').decode('ascii').";
+CM_ SG_ 1996 Rsp_JumpAppStatusString "Response to command 0x20: ASCII status characters (e.g. \"OK\"), 2 bytes (bytes 3-4), filled in by the bootloader.";
+CM_ SG_ 1996 Rsp_WriteResult "Response to command 0x21: 0 = write failed, 1 = write succeeded (byte 3). NOTE: for the first packet (offset = 0) a returned 0 does not necessarily mean failure because of the flash erase time; handle it according to the retry rules in the protocol document.";
+CM_ SG_ 1996 Rsp_JumpBootloaderCondition "Response to command 0x30: 0x00 = jump to bootloader permitted (byte 3). Other values are not fully enumerated in the source; treat them as raw values. The device waits 100 ms after sending the response before actually jumping, and the host must wait at least 2 s for bootloader initialization before sending further commands.";
+CM_ SG_ 1996 Rsp_CurrentSamplingState "Response to command 0x40: 0 = sampling off, 1 = sampling on (byte 3).";
+CM_ SG_ 1996 CRC16 "CRC-16/CCITT-FALSE over bytes 0-61, stored little-endian in bytes 62-63.";
+
+BA_DEF_ BO_ "VFrameFormat" ENUM "StandardCAN","StandardCAN_FD","ExtendedCAN","ExtendedCAN_FD";
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","OnEvent","NoMsgSendType";
+BA_DEF_DEF_ "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "NoMsgSendType";
+BA_ "VFrameFormat" BO_ 385 1;
+BA_ "VFrameFormat" BO_ 386 1;
+BA_ "VFrameFormat" BO_ 387 1;
+BA_ "VFrameFormat" BO_ 1988 1;
+BA_ "VFrameFormat" BO_ 1996 1;
+BA_ "GenMsgCycleTime" BO_ 385 10;
+BA_ "GenMsgCycleTime" BO_ 386 10;
+BA_ "GenMsgCycleTime" BO_ 387 0;
+BA_ "GenMsgCycleTime" BO_ 1988 0;
+BA_ "GenMsgCycleTime" BO_ 1996 0;
+BA_ "GenMsgSendType" BO_ 385 0;
+BA_ "GenMsgSendType" BO_ 386 0;
+BA_ "GenMsgSendType" BO_ 387 1;
+BA_ "GenMsgSendType" BO_ 1988 1;
+BA_ "GenMsgSendType" BO_ 1996 1;
+
+VAL_ 385 RS_SystemState 0 "NONE" 1 "NORMAL" 2 "FAULT" 3 "NONE_ALT" ;
+VAL_ 386 RS_SystemState 0 "NONE" 1 "NORMAL" 2 "FAULT" 3 "NONE_ALT" ;
+VAL_ 386 FS_AttitudeQuality 0 "Excellent" 1 "Good" 2 "Bad" 3 "NotTracking" ;
+VAL_ 387 sentence_ctrl 0 "IMU_AND_ATT" 1 "IMU_ONLY" 2 "ATT_ONLY" ;
+VAL_ 387 output_rate 0 "100Hz" 1 "200Hz" 2 "500Hz" 3 "1000Hz" ;
+VAL_ 387 fusion_mode 0 "6AXIS_GYRO_ACC" 1 "9AXIS_GYRO_ACC_MAG" ;
+VAL_ 387 output_interface 0 "CAN" 1 "UART" 2 "SPI" ;
+VAL_ 387 UART_Baud_rate_Config 0 "115200" 1 "460800" 2 "921600" ;
+VAL_ 387 SPI_mode 0 "CPOL0_CPHA0" 1 "CPOL0_CPHA1" 2 "CPOL1_CPHA0" 3 "CPOL1_CPHA1" ;
+VAL_ 387 Orientation_Index 0 "F+X_R+Y_D+Z" 1 "F-X_R-Y_D+Z" 2 "F-Y_R+X_D+Z" 3 "F+Y_R-X_D+Z" 4 "F-X_R+Y_D-Z" 5 "F+X_R-Y_D-Z" 6 "F+Y_R+X_D-Z" 7 "F-Y_R-X_D-Z" 8 "F-Z_R+Y_D+X" 9 "F+Z_R-Y_D+X" 10 "F+Y_R+Z_D+X" 11 "F-Y_R-Z_D+X" 12 "F+Z_R+Y_D-X" 13 "F-Z_R-Y_D-X" 14 "F-Y_R+Z_D-X" 15 "F+Y_R-Z_D-X" 16 "F-X_R+Z_D+Y" 17 "F+X_R-Z_D+Y" 18 "F+Z_R+X_D+Y" 19 "F-Z_R-X_D+Y" 20 "F+X_R+Z_D-Y" 21 "F-X_R-Z_D-Y" 22 "F-Z_R+X_D-Y" 23 "F+Z_R-X_D-Y" ;
+VAL_ 1988 function_code 6 "GetBootloaderVersion" 7 "GetAppVersion" 8 "GetAppCurrentBank" 9 "GetSerialNumber" 32 "JumpApp" 33 "WriteApp" 34 "UpgradeCheck_NotImplemented" 35 "SelectAppBlock_NotImplemented" 48 "JumpBootloader" 64 "SetSampling" ;
+VAL_ 1988 Req_SamplingEnable 0 "Disable" 1 "Enable" ;
+VAL_ 1996 function_code 6 "GetBootloaderVersion" 7 "GetAppVersion" 8 "GetAppCurrentBank" 9 "GetSerialNumber" 32 "JumpApp" 33 "WriteApp" 34 "UpgradeCheck_NotImplemented" 35 "SelectAppBlock_NotImplemented" 48 "JumpBootloader" 64 "SetSampling" ;
+VAL_ 1996 Rsp_WriteResult 0 "Fail" 1 "Success" ;
+VAL_ 1996 Rsp_CurrentSamplingState 0 "Disabled" 1 "Enabled" ;
+
+SIG_VALTYPE_ 385 Gyro_X : 1;
+SIG_VALTYPE_ 385 Gyro_Y : 1;
+SIG_VALTYPE_ 385 Gyro_Z : 1;
+SIG_VALTYPE_ 385 Acc_X : 1;
+SIG_VALTYPE_ 385 Acc_Y : 1;
+SIG_VALTYPE_ 385 Acc_Z : 1;
+SIG_VALTYPE_ 385 Mag_X : 1;
+SIG_VALTYPE_ 385 Mag_Y : 1;
+SIG_VALTYPE_ 385 Mag_Z : 1;
+SIG_VALTYPE_ 385 Temp : 1;
+SIG_VALTYPE_ 386 Attitude_X : 1;
+SIG_VALTYPE_ 386 Attitude_Y : 1;
+SIG_VALTYPE_ 386 Attitude_Z : 1;
+SIG_VALTYPE_ 386 Quat_X : 1;
+SIG_VALTYPE_ 386 Quat_Y : 1;
+SIG_VALTYPE_ 386 Quat_Z : 1;
+SIG_VALTYPE_ 386 Quat_W : 1;
+SIG_VALTYPE_ 386 Temp : 1;
+SIG_VALTYPE_ 387 latitude : 2;
+SIG_VALTYPE_ 387 longitude : 2;
+SIG_VALTYPE_ 387 height : 1;
