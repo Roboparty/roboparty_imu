@@ -96,6 +96,10 @@ install(TARGETS imu_py
   RUNTIME DESTINATION ${PYTHON_INSTALL_DIR}
 )
 
+install(FILES scripts/imu_ota.py
+  DESTINATION ${PYTHON_INSTALL_DIR}
+)
+
 if(ament_cmake_FOUND)
   ament_export_libraries(imu hipnuc_imu mct7123_imu imu_protocol)
   ament_export_include_directories(include)
