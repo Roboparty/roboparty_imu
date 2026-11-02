@@ -1261,6 +1261,8 @@ def run_internal_self_tests() -> None:
     check(_version_key(None) is None and _version_key("x.y.z") is None, "version key invalid")
 
     # Bus-clear guard: requests aimed at the node block, other traffic passes.
+    # The guard logs warnings to stderr; silence them here so self-tests never
+    # look like real warnings on the console.
     class _FakeFrame:
         def __init__(self, arbitration_id: int):
             self.arbitration_id = arbitration_id
@@ -1273,16 +1275,20 @@ def run_internal_self_tests() -> None:
         def recv(self, _timeout):
             return self._frames.pop(0) if self._frames else None
 
-    quiet = [_FakeFrame(0x0CFF3408), _FakeFrame(0x0CEF5508)]
-    _assert_bus_clear(_FakeBus(quiet), 8, window=0.01)  # measurements/replies pass
-    for foreign in (0x608, 0x0CEF08AA):  # SDO request / config request to node 8
-        try:
-            _assert_bus_clear(_FakeBus([_FakeFrame(foreign)]), 8, window=0.01)
-        except TransportError:
-            pass
-        else:
-            check(False, f"foreign request 0x{foreign:08X} must abort")
-    _assert_bus_clear(_FakeBus([_FakeFrame(0x608)]), 8, window=0.01, force=True)  # warn only
+    import contextlib
+    import io
+
+    with contextlib.redirect_stderr(io.StringIO()):
+        quiet = [_FakeFrame(0x0CFF3408), _FakeFrame(0x0CEF5508)]
+        _assert_bus_clear(_FakeBus(quiet), 8, window=0.01)  # measurements/replies pass
+        for foreign in (0x608, 0x0CEF08AA):  # SDO request / config request to node 8
+            try:
+                _assert_bus_clear(_FakeBus([_FakeFrame(foreign)]), 8, window=0.01)
+            except TransportError:
+                pass
+            else:
+                check(False, f"foreign request 0x{foreign:08X} must abort")
+        _assert_bus_clear(_FakeBus([_FakeFrame(0x608)]), 8, window=0.01, force=True)
 
 
 def main(argv: Optional[list[str]] = None) -> int:
