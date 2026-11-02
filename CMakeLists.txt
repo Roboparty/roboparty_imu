@@ -96,7 +96,7 @@ install(TARGETS imu_py
   RUNTIME DESTINATION ${PYTHON_INSTALL_DIR}
 )
 
-install(FILES scripts/imu_ota.py scripts/hipnuc_ota.py
+install(FILES scripts/imu_ota.py scripts/hipnuc_ota.py scripts/mct_ota.py
   DESTINATION ${PYTHON_INSTALL_DIR}
 )
 
