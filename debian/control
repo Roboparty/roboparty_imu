@@ -7,7 +7,8 @@ Build-Depends: debhelper-compat (= 12), cmake, pkg-config,
 
 Package: roboparty-imu
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, roboparty-base (>= 1.0.0)
+Depends: ${shlibs:Depends}, ${misc:Depends}, roboparty-base (>= 1.0.0),
+         python3-can
 Description: RoboParty IMU driver
  IMU driver with HIPNUC support (CAN and serial protocols).
  Provides static libraries, headers and Python bindings.

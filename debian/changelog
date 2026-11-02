@@ -1,3 +1,21 @@
+roboparty-imu (1.4.1-1) stable; urgency=medium
+
+  * Align the hipnuc driver protocol decoders with the upstream SDK: unified
+    samples for serial and CAN, remove the obsolete parser compatibility
+    layer.
+  * Add the HiPNUC CAN OTA tool (scripts/hipnuc_ota.py): version query and
+    firmware update with model gating, SHA-256 reporting, HiPNUC image
+    validation, JSON output, power-cycle recovery and a single-master bus
+    check.
+  * Add the IMU OTA entry point (scripts/imu_ota.py) dispatching to the
+    HiPNUC (hipnuc_ota.py) and MCT7123/MD7123 (mct_ota.py) update modules.
+  * Install the OTA Python modules to site-packages and /opt/roboparty/bin;
+    add the python3-can runtime dependency.
+  * Add the HIPNUC 1.7.2 firmware image, update DBC files and rename
+    bundled firmware files.
+
+ -- RoboParty <cenliey@qq.com>  Mon, 02 Nov 2026 14:11:03 +0800
+
 roboparty-imu (1.4.0-1) stable; urgency=medium
 
   * Build packages natively on Ubuntu 24.04 for amd64 and arm64.

@@ -2,6 +2,13 @@
 .vscode/
 .idea/
 
+# python
+__pycache__/
+*.pyc
+
+# docs
+docs/
+
 # ros2
 build/
 install/
