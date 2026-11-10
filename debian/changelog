@@ -9,8 +9,8 @@ roboparty-imu (1.4.1-1) stable; urgency=medium
     check.
   * Add the IMU OTA entry point (scripts/imu_ota.py) dispatching to the
     HiPNUC (hipnuc_ota.py) and MCT7123/MD7123 (mct_ota.py) update modules.
-  * Install the OTA Python modules to site-packages and /opt/roboparty/bin;
-    add the python3-can runtime dependency.
+  * Install the OTA Python modules to site-packages and the configured install
+    prefix (default /opt/roboparty)/bin; add the python3-can runtime dependency.
   * Add the HIPNUC 1.7.2 firmware image, update DBC files and rename
     bundled firmware files.
 

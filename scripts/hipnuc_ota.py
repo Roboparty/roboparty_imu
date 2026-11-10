@@ -4,8 +4,8 @@
 # Copyright (C) 2026 RoboParty
 
 # Installed command examples:
-#   /opt/roboparty/bin/hipnuc_ota.py info --interface can0 --node 8
-#   /opt/roboparty/bin/hipnuc_ota.py update /path/to/HIPNUC_x.y.z_HIxxxx.hex \
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/hipnuc_ota.py info --interface can0 --node 8
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/hipnuc_ota.py update /path/to/HIPNUC_x.y.z_HIxxxx.hex \
 #       --interface can0 --node 8
 # Each update invocation performs a real flash write after all preflight checks.
 #
