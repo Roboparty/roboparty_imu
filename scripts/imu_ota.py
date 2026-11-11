@@ -4,9 +4,9 @@
 # Copyright (C) 2026 RoboParty
 
 # Installed command examples:
-#   /opt/roboparty/bin/imu_ota.py hipnuc info --interface can0 --node 8
-#   /opt/roboparty/bin/imu_ota.py hipnuc update firmware.hex --interface can0 --node 8
-#   /opt/roboparty/bin/imu_ota.py mct --firmware /path/to/firmware.bin --interface can0
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/imu_ota.py hipnuc info --interface can0 --node 8
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/imu_ota.py hipnuc update firmware.hex --interface can0 --node 8
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/imu_ota.py mct --firmware /path/to/firmware.bin --interface can0
 # The first argument selects the IMU family; the remaining arguments are the
 # selected module's own options. Each module also runs standalone.
 

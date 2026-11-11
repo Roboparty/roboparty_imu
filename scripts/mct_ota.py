@@ -4,8 +4,8 @@
 # Copyright (C) 2026 changchuanyong
 
 # Installed command examples:
-#   /opt/roboparty/bin/mct_ota.py
-#   /opt/roboparty/bin/mct_ota.py --firmware /path/to/firmware.bin
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/mct_ota.py
+#   ${ROBOOS_PREFIX:-/opt/roboparty}/bin/mct_ota.py --firmware /path/to/firmware.bin
 # Each invocation performs a real OTA after all preflight checks pass.
 #
 # The SocketCAN interface must be configured and up before real execution.
@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import re
 import socket
 import struct
@@ -38,10 +39,11 @@ from pathlib import Path
 from typing import Callable, Optional
 
 
+ROBOOS_PREFIX = Path(os.environ.get("ROBOOS_PREFIX", Path(__file__).resolve().parent.parent))
 DEFAULT_IMU_TYPE = "MCT7123"
 DEFAULT_INTERFACE = "can_imu"
-DEFAULT_FIRMWARE = (
-    "/opt/roboparty/lib/firmware/300702-0001_MD7123_App_v01.02.09_SW02.bin"
+DEFAULT_FIRMWARE = str(
+    ROBOOS_PREFIX / "lib/firmware/300702-0001_MD7123_App_v01.02.09_SW02.bin"
 )
 
 # Optional expected App version.
