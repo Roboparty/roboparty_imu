@@ -6,10 +6,6 @@
 #include "mct7123_dec.h"
 #include <string.h>
 
-#define MCT7123_ATT_FUSION_STATUS_OFFSET 38U
-#define MCT7123_ATT_RUNNING_STATUS_OFFSET 42U
-#define MCT7123_RUNNING_STATUS_SIZE 6U
-
 /* CRC16-CCITT: poly 0x1021, init 0xFFFF */
 uint16_t mct7123_crc16(const uint8_t *data, size_t len)
 {
@@ -115,7 +111,8 @@ void mct7123_parse_imu(const uint8_t payload[64],
                        float *gyr_x, float *gyr_y, float *gyr_z,
                        float *acc_x, float *acc_y, float *acc_z,
                        float *mag_x, float *mag_y, float *mag_z,
-                       float *temp, uint64_t *systimer_us, uint8_t *cycle)
+                       float *temp, uint8_t *running_status,
+                       uint64_t *systimer_us, uint8_t *cycle)
 {
     if (systimer_us) memcpy(systimer_us, payload, 8);
     *gyr_x = r4(payload + 8);
@@ -128,6 +125,9 @@ void mct7123_parse_imu(const uint8_t payload[64],
     *mag_y = r4(payload + 36);
     *mag_z = r4(payload + 40);
     *temp  = r4(payload + 44);
+    if (running_status) memcpy(running_status,
+                               payload + MCT7123_IMU_RUNNING_STATUS_OFFSET,
+                               MCT7123_RUNNING_STATUS_SIZE);
     if (cycle) *cycle = payload[61];
 }
 
@@ -171,4 +171,27 @@ void mct7123_parse_cfg(const uint8_t payload[64],
     if (latitude)      memcpy(latitude,  payload + 4,  8);
     if (longitude)     memcpy(longitude, payload + 12, 8);
     if (height)        memcpy(height,    payload + 20, 4);
+}
+
+int mct7123_cfg_check(uint8_t sentence_ctrl, uint8_t output_rate,
+                      uint8_t fusion_mode)
+{
+    return sentence_ctrl <= MCT7123_CFG_SENTENCE_CTRL_MAX &&
+           output_rate <= MCT7123_CFG_OUTPUT_RATE_MAX &&
+           fusion_mode <= MCT7123_CFG_FUSION_MODE_MAX;
+}
+
+void mct7123_build_frame(uint8_t msg_id, const uint8_t payload[64],
+                         uint8_t out[MCT7123_BUF_SIZE])
+{
+    uint16_t crc;
+    out[0] = 0xEB;
+    out[1] = 0x90;
+    out[2] = msg_id;
+    out[3] = MCT7123_PAYLOAD_LEN;
+    memcpy(out + 4, payload, MCT7123_PAYLOAD_LEN);
+    crc = mct7123_crc16(out + 4, 62);
+    out[4 + 62] = (uint8_t)(crc & 0xFFu);
+    out[4 + 63] = (uint8_t)(crc >> 8);
+    out[MCT7123_BUF_SIZE - 1] = 0xED;
 }
