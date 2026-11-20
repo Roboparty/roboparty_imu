@@ -37,10 +37,45 @@ class Mct7123IMUDriver : public IMUDriver {
   /** @brief Stop reception and release transport resources. */
   ~Mct7123IMUDriver() override;
 
+  /** @brief Configuration reported by message 0x83 (dbc.txt 6.2.4). */
+  struct ConfigData {
+    uint8_t sentence_ctrl{};
+    uint8_t output_rate{};
+    uint8_t orientation{};
+    uint8_t fusion_mode{};
+    double latitude{};
+    double longitude{};
+    float height{};
+    bool valid{false};
+  };
+
   std::vector<float> get_ang_vel() override;
   std::vector<float> get_quat() override;
   std::vector<float> get_lin_acc() override;
   float get_temperature() override;
+
+  /** @brief Magnetic field {x, y, z} as reported by the device. */
+  std::vector<float> get_mag();
+  /** @brief Euler angles {roll, pitch, yaw}, FRD->FLU converted. */
+  std::vector<float> get_euler();
+  /** @brief Device timestamp in milliseconds (systimer; wire unit is ms). */
+  uint64_t get_timestamp_ms();
+  /** @brief Rolling cycle counter 0-255. */
+  uint8_t get_cycle();
+  /** @brief Six running-status bytes (0x81 offset 48 / 0x82 offset 42). */
+  std::vector<uint8_t> get_running_status();
+  /** @brief Fusion status word (0x82 offset 38). */
+  uint32_t get_fusion_status();
+  /** @brief Last configuration reported by message 0x83. */
+  ConfigData get_config();
+
+  /**
+   * @brief Mirror every received CAN FD frame out of a serial port as a UART
+   *        frame (0xEB 0x90 | msg_id | 0x40 | payload | 0xED).
+   * @param[in] device Serial device path to transmit on.
+   * @param[in] baudrate Serial baud rate (same set as IMUSerialPort).
+   */
+  void enable_uart_forward(const std::string& device, int baudrate);
 
  private:
   void open_serial();
@@ -71,6 +106,8 @@ class Mct7123IMUDriver : public IMUDriver {
     uint64_t timestamp_us{};
     uint8_t running_status[6]{};
     uint8_t cycle{};
+    uint32_t fusion_status{};
+    ConfigData config{};
   };
 
   int baudrate_{};
@@ -78,6 +115,7 @@ class Mct7123IMUDriver : public IMUDriver {
   std::string interface_;
   mutable std::shared_mutex imu_mutex_;
   std::shared_ptr<IMUSerialPort> serial_;
+  std::shared_ptr<IMUSerialPort> forward_serial_;
   std::shared_ptr<IMUSocketCANFD> canfd_;
   mct7123_raw_t raw_{};
   SensorData sensor_data_{};

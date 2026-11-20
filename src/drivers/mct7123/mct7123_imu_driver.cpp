@@ -49,7 +49,14 @@ void Mct7123IMUDriver::open_canfd() {
 
 void Mct7123IMUDriver::close_transport() {
   if (serial_) serial_->close();
+  if (forward_serial_) forward_serial_->close();
   if (canfd_) canfd_->close();
+}
+
+void Mct7123IMUDriver::enable_uart_forward(const std::string& device,
+                                           int baudrate) {
+  std::unique_lock<std::shared_mutex> lock(imu_mutex_);
+  forward_serial_ = IMUSerialPort::open(device, baudrate);
 }
 
 void Mct7123IMUDriver::serial_rx_cbk(const uint8_t* data, size_t length) {
@@ -73,6 +80,17 @@ void Mct7123IMUDriver::can_rx_cbk(const canfd_frame& frame) {
 
   const auto message_id = static_cast<uint8_t>(
       MCT7123_MSG_IMU_DATA + frame_id - first_frame_id);
+
+  // Mirror the frame out of the UART forward port in the UART wire format.
+  {
+    std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+    if (forward_serial_) {
+      uint8_t out[MCT7123_BUF_SIZE];
+      mct7123_build_frame(message_id, frame.data, out);
+      forward_serial_->send(out, sizeof(out));
+    }
+  }
+
   parse_payload(message_id, frame.data);
 }
 
@@ -87,7 +105,7 @@ void Mct7123IMUDriver::parse_payload(uint8_t message_id,
     uint8_t cycle;
     mct7123_parse_imu(payload, &gyro_x, &gyro_y, &gyro_z, &acc_x, &acc_y,
                       &acc_z, &mag_x, &mag_y, &mag_z, &temperature,
-                      &timestamp_us, &cycle);
+                      sensor_data_.running_status, &timestamp_us, &cycle);
     sensor_data_.gyr_x = gyro_x * kDegreesToRadians;
     sensor_data_.gyr_y = gyro_y * kDegreesToRadians;
     sensor_data_.gyr_z = gyro_z * kDegreesToRadians;
@@ -118,9 +136,24 @@ void Mct7123IMUDriver::parse_payload(uint8_t message_id,
     sensor_data_.temperature = temperature;
     sensor_data_.timestamp_us = timestamp_us;
     sensor_data_.cycle = cycle;
+    sensor_data_.fusion_status = fusion_status;
   } else if (message_id == MCT7123_MSG_CFG_DATA) {
-    mct7123_parse_cfg(payload, nullptr, nullptr, nullptr, nullptr, nullptr,
-                      nullptr, nullptr);
+    ConfigData cfg;
+    mct7123_parse_cfg(payload, &cfg.sentence_ctrl, &cfg.output_rate,
+                      &cfg.orientation, &cfg.fusion_mode, &cfg.latitude,
+                      &cfg.longitude, &cfg.height);
+    if (!mct7123_cfg_check(cfg.sentence_ctrl, cfg.output_rate,
+                           cfg.fusion_mode)) {
+      // Out-of-range enum fields: reject the whole frame and keep the last
+      // known-good config instead of storing garbage.
+      logger_->warn(
+          "MCT7123 cfg frame rejected (out of range): sentence_ctrl={} "
+          "output_rate={} fusion_mode={}",
+          cfg.sentence_ctrl, cfg.output_rate, cfg.fusion_mode);
+      return;
+    }
+    cfg.valid = true;
+    sensor_data_.config = cfg;
   }
 }
 
@@ -143,4 +176,41 @@ std::vector<float> Mct7123IMUDriver::get_lin_acc() {
 float Mct7123IMUDriver::get_temperature() {
   std::shared_lock<std::shared_mutex> lock(imu_mutex_);
   return sensor_data_.temperature;
+}
+
+std::vector<float> Mct7123IMUDriver::get_mag() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return {sensor_data_.mag_x, sensor_data_.mag_y, sensor_data_.mag_z};
+}
+
+std::vector<float> Mct7123IMUDriver::get_euler() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return {sensor_data_.roll, sensor_data_.pitch, sensor_data_.yaw};
+}
+
+uint64_t Mct7123IMUDriver::get_timestamp_ms() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return sensor_data_.timestamp_us;
+}
+
+uint8_t Mct7123IMUDriver::get_cycle() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return sensor_data_.cycle;
+}
+
+std::vector<uint8_t> Mct7123IMUDriver::get_running_status() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return std::vector<uint8_t>(
+      sensor_data_.running_status,
+      sensor_data_.running_status + MCT7123_RUNNING_STATUS_SIZE);
+}
+
+uint32_t Mct7123IMUDriver::get_fusion_status() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return sensor_data_.fusion_status;
+}
+
+Mct7123IMUDriver::ConfigData Mct7123IMUDriver::get_config() {
+  std::shared_lock<std::shared_mutex> lock(imu_mutex_);
+  return sensor_data_.config;
 }
