@@ -1,3 +1,19 @@
+roboparty-imu (1.4.2-1) stable; urgency=medium
+
+  * MCT7123 CAN FD: parse the complete dbc.txt frame set; Running_Status,
+    Fusion_Status and the 0x183 config message are now stored instead of
+    dropped.
+  * Add Mct7123IMUDriver accessors: get_mag, get_euler, get_timestamp_ms,
+    get_cycle, get_running_status, get_fusion_status, get_config.
+  * Fix 0x182 status offsets (Fusion_Status 38 -> 40, Running_Status 42 ->
+    44) per the DBC "Start Bit" column; systimer unit documented as ms.
+  * Validate 0x183 config enum fields; out-of-range frames are rejected and
+    the last known-good config kept.
+  * Add UART-format output for CAN frames: mct7123_build_frame(),
+    IMUSerialPort::send(), enable_uart_forward().
+
+ -- RoboParty <cenliey@qq.com>  Mon, 02 Nov 2026 14:11:03 +0800
+
 roboparty-imu (1.4.1-1) stable; urgency=medium
 
   * Align the hipnuc driver protocol decoders with the upstream SDK: unified
