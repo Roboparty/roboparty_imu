@@ -148,3 +148,21 @@ void IMUSerialPort::close() {
 void IMUSerialPort::set_serial_callback(SerialCbkFunc callback) {
     callback_ = callback;
 }
+
+void IMUSerialPort::send(const uint8_t* data, size_t length) {
+    std::lock_guard<std::mutex> lock(write_mutex_);
+    if (fd_ < 0) {
+        if (logger_) logger_->warn("send on closed serial port {}", interface_);
+        return;
+    }
+    size_t off = 0;
+    while (off < length) {
+        ssize_t n = ::write(fd_, data + off, length - off);
+        if (n < 0) {
+            if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) continue;
+            if (logger_) logger_->error("write error on {}: {}", interface_, strerror(errno));
+            return;
+        }
+        off += static_cast<size_t>(n);
+    }
+}

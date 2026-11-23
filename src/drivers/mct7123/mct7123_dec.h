@@ -12,6 +12,10 @@
  *   Payload: 64 bytes
  *   Tail:    0xED
  *   CRC16:   CCITT (poly 0x1021, init 0xFFFF) over payload[0..61]
+ *
+ * The same 64-byte payload travels on CAN FD frames (IDs 0x181 = IMU,
+ * 0x182 = Att, 0x183 = Config, see dbc.txt).  mct7123_build_frame()
+ * re-wraps a payload as a UART frame for UART-style output.
  */
 
 #ifndef __MCT7123_DEC_H__
@@ -30,6 +34,25 @@ extern "C" {
 
 #define MCT7123_PAYLOAD_LEN   64
 #define MCT7123_BUF_SIZE      (2 + 1 + 1 + MCT7123_PAYLOAD_LEN + 1)  /* 69 */
+
+/* Payload field offsets shared by the UART frames and the CAN FD frames
+ * (dbc.txt 6.2.2-6.2.4).  Follow the DBC "Start Bit" column: the "Start
+ * Byte" column drifts after Temp and reads 38/42 for the 0x82 status fields,
+ * which overlaps Temp and is disproven by live CAN FD captures (the offset-38
+ * word equals the upper half of the Temp float).  Hardware-verified layout:
+ * fusion_status at 40..43, running_status at 44..49. */
+#define MCT7123_IMU_RUNNING_STATUS_OFFSET  48U
+#define MCT7123_ATT_FUSION_STATUS_OFFSET   40U
+#define MCT7123_ATT_RUNNING_STATUS_OFFSET  44U
+#define MCT7123_RUNNING_STATUS_SIZE         6U
+
+/* Valid values of the 0x83 config enum fields (dbc.txt 6.2.4):
+ *   sentence_ctrl: 0x0=IMU+ATT  0x1=IMU only  0x2=ATT only
+ *   output_rate:   0x0=100Hz    0x1=200Hz     0x2=500Hz   0x3=1000Hz
+ *   fusion_mode:   0x0=Gyro+Acc 0x1=Gyro+Acc+Mag */
+#define MCT7123_CFG_SENTENCE_CTRL_MAX   0x02U
+#define MCT7123_CFG_OUTPUT_RATE_MAX     0x03U
+#define MCT7123_CFG_FUSION_MODE_MAX     0x01U
 
 /**
  * @brief Byte-by-byte decoder state for an MCT7123 UART frame.
@@ -91,17 +114,22 @@ uint16_t mct7123_crc16(const uint8_t *data, size_t len);
  * @param[out] mag_y Y-axis magnetic-field measurement.
  * @param[out] mag_z Z-axis magnetic-field measurement.
  * @param[out] temp Device temperature.
- * @param[out] systimer_us Device timestamp in microseconds; may be NULL.
+ * @param[out] running_status Buffer receiving the six status bytes at payload
+ *                            offset 48 (dbc.txt "Running_Status"); may be NULL.
+ * @param[out] systimer_us Device timestamp in milliseconds (systimer); may be
+ *                         NULL.  (Legacy name kept; the wire unit is ms.)
  * @param[out] cycle Device cycle counter; may be NULL.
  *
- * @note All scalar output pointers except @p systimer_us and @p cycle must be
- *       valid. Values are decoded in host-native floating-point format.
+ * @note All scalar output pointers except @p running_status, @p systimer_us
+ *       and @p cycle must be valid. Values are decoded in host-native
+ *       floating-point format.
  */
 void mct7123_parse_imu(const uint8_t payload[64],
                        float *gyr_x, float *gyr_y, float *gyr_z,
                        float *acc_x, float *acc_y, float *acc_z,
                        float *mag_x, float *mag_y, float *mag_z,
-                       float *temp, uint64_t *systimer_us, uint8_t *cycle);
+                       float *temp, uint8_t *running_status,
+                       uint64_t *systimer_us, uint8_t *cycle);
 
 /**
  * @brief Decode an MCT7123 attitude payload.
@@ -116,17 +144,18 @@ void mct7123_parse_imu(const uint8_t payload[64],
  * @param[out] qz Quaternion Z component.
  * @param[out] temp Device temperature.
  * @param[out] running_status Buffer receiving the six status bytes at payload
- *                            offset 42; may be NULL.
- * @param[out] fusion_status Fusion status word at payload offset 38; may be
+ *                            offset 44; may be NULL.
+ * @param[out] fusion_status Fusion status word at payload offset 40; may be
  *                           NULL.
- * @param[out] systimer_us Device timestamp in microseconds; may be NULL.
+ * @param[out] systimer_us Device timestamp in milliseconds (systimer); may be
+ *                         NULL.  (Legacy name kept; the wire unit is ms.)
  * @param[out] cycle Device cycle counter; may be NULL.
  *
  * @note Angle and quaternion outputs, plus @p temp, must point to writable
  *       storage. This function only decodes data and performs no unit
  *       conversion.
- * @note Status offsets 38 and 42 preserve the layout validated by the working
- *       MCT7123 implementation in commit cd94935.
+ * @note Status offsets follow the DBC "Start Bit" column (fusion 40, running
+ *       44), verified against live CAN FD captures; see mct7123_dec.h notes.
  */
 void mct7123_parse_att(const uint8_t payload[64],
                        float *roll, float *pitch, float *yaw,
@@ -154,6 +183,39 @@ void mct7123_parse_cfg(const uint8_t payload[64],
                        uint8_t *sentence_ctrl, uint8_t *output_rate,
                        uint8_t *orientation, uint8_t *fusion_mode,
                        double *latitude, double *longitude, float *height);
+
+/**
+ * @brief Range-check the 0x83 config enum fields against dbc.txt 6.2.4.
+ *
+ * sentence_ctrl must be <= MCT7123_CFG_SENTENCE_CTRL_MAX, output_rate <=
+ * MCT7123_CFG_OUTPUT_RATE_MAX and fusion_mode <= MCT7123_CFG_FUSION_MODE_MAX.
+ * mct7123_parse_cfg() stays a pure extractor; callers use this function to
+ * decide whether a decoded config is well-formed before storing it.
+ *
+ * @param[in] sentence_ctrl Output-sentence mask value to check.
+ * @param[in] output_rate Output-rate code to check.
+ * @param[in] fusion_mode Fusion-mode code to check.
+ *
+ * @return 1 if all three fields are within their documented ranges,
+ *         0 otherwise.
+ */
+int mct7123_cfg_check(uint8_t sentence_ctrl, uint8_t output_rate,
+                      uint8_t fusion_mode);
+
+/**
+ * @brief Wrap a 64-byte payload into a complete UART frame.
+ *
+ * Builds the 69-byte wire frame `0xEB 0x90 | msg_id | 0x40 | payload | 0xED`
+ * around @p payload.  The CRC16-CCITT over payload[0..61] is (re)computed and
+ * written to payload positions 62..63 (little-endian) inside @p out, so the
+ * caller may pass a payload with stale CRC bytes.
+ *
+ * @param[in] msg_id Message type (MCT7123_MSG_IMU_DATA / _ATT_DATA / _CFG_DATA).
+ * @param[in] payload 64-byte payload to wrap (same layout as CAN FD data).
+ * @param[out] out Buffer of at least MCT7123_BUF_SIZE bytes receiving the frame.
+ */
+void mct7123_build_frame(uint8_t msg_id, const uint8_t payload[64],
+                         uint8_t out[MCT7123_BUF_SIZE]);
 
 #ifdef __cplusplus
 }

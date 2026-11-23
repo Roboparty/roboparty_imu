@@ -44,6 +44,14 @@ public:
     void init();
 
     void set_serial_callback(SerialCbkFunc callback);
+
+    /**
+     * @brief Write bytes to the serial port (thread-safe).
+     * @param[in] data Bytes to transmit.
+     * @param[in] length Number of bytes; short writes are retried internally.
+     */
+    void send(const uint8_t* data, size_t length);
+
     void close();
 
 private:
@@ -55,6 +63,7 @@ private:
     std::atomic<bool> running_;
     std::thread rx_thread_;
     SerialCbkFunc callback_;
+    std::mutex write_mutex_;
 
     static std::shared_ptr<spdlog::logger> logger_;
 };
